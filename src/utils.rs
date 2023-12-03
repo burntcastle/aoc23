@@ -8,25 +8,30 @@ use std::{
 #[derive(Clone, Copy)]
 pub enum ProblemInput<'a> {
     File(&'a str),
+
+    #[allow(unused)]
     String(&'a str),
 }
 
 // this abstracts the input between strings (for testing) and files (for real)
-pub struct Input<'a>  {
-    data: ProblemInput<'a> ,
+pub struct Input<'a> {
+    data: ProblemInput<'a>,
 }
-impl Input<'_>  {
+impl Input<'_> {
     pub fn new(input: ProblemInput) -> Input {
         Input { data: input }
-    }                 
+    }
 
     pub fn get_data(&self) -> Box<dyn BufRead + '_> {
         let result: Box<dyn BufRead> = match &self.data {
             ProblemInput::File(x) => {
                 let path = Path::new(x);
-                let file = match File::open(&path) {
-   
-                    Err(why) => panic!("couldn't open {}: {}", path.display(), Error::to_string(&why)),
+                let file = match File::open(path) {
+                    Err(why) => panic!(
+                        "couldn't open {}: {}",
+                        path.display(),
+                        Error::to_string(&why)
+                    ),
                     Ok(file) => file,
                 };
                 let reader = BufReader::new(file);
@@ -37,7 +42,6 @@ impl Input<'_>  {
                 Box::new(reader)
             }
         };
-        return result;
-
+        result
     }
 }

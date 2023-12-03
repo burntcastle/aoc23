@@ -60,7 +60,7 @@ mod tests {
     #[test]
     fn test_part_one_multi_line() {
         let input = "################
-################";
+        ################";
 
         let input = ProblemInput::String(input);
         let result = do_part_one(Input::new(input));

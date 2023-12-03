@@ -1,7 +1,4 @@
-use std::io;
-
-use crate::utils::{Input, ProblemInput};
-
+use std::{io, process::exit};
 mod days;
 mod utils;
 
@@ -13,24 +10,43 @@ fn read_i32() -> i32 {
 fn main() {
     loop {
         println!("Enter day (0 to quit):");
+        //let day = read_i32();
         let day = read_i32();
-        match day {
+        let scores = match day {
             0 => {
                 println!("Exiting...");
-                break;
+                exit(1);
+
             }
-            1 => {
-                let path = "./inputs/1/one";
-                let input = ProblemInput::File(path);
-                let result = days::one::part_one(Input::new(input));
-                println!("Part One: {}", result);
-                let result = days::one::part_two(Input::new(input));
-                println!("Part Two: {}", result);
+            1 => {              
+                Some((days::one::part_one(),days::one::part_two()))
+            }
+            2 => {
+                Some((days::two::part_one(),days::two::part_two()))
+            }
+            3 =>{
+                Some((days::three::part_one(),days::three::part_two()))
+
+            }
+            4 =>{
+                None
+                //Some((days::four::part_one(),days::four::part_two()))
+            }
+            _ => {
+                None
+            }
+        };
+
+        match scores {
+            Some(((r1,e1),(r2,e2))) => {
+                println!("Part One: {} ({:.2?})", r1, e1);
+                println!("Part Two: {} ({:.2?})", r2, e2);
             }
             _ => {
                 println!("Invalid Day")
             }
-        }
+        };
+
         println!();
     }
 }
