@@ -2,11 +2,13 @@ use std::{io, process::exit};
 mod days;
 mod utils;
 
+#[cfg(not(tarpaulin_include))]
 fn read_i32() -> i32 {
     let line = io::stdin().lines().next().unwrap().unwrap();
     line.parse().unwrap_or(-1)
 }
 
+#[cfg(not(tarpaulin_include))]
 fn main() {
     loop {
         println!("Enter day (0 to quit):");

@@ -5,7 +5,7 @@ pub fn the_day() -> u32 {
     4
 }
 
-#[allow(unused)]
+#[cfg(not(tarpaulin_include))]
 pub fn part_one() -> (u32, std::time::Duration) {
     todo!("Implement day {} part one",the_day());
     let now = Instant::now();
@@ -15,7 +15,7 @@ pub fn part_one() -> (u32, std::time::Duration) {
     (do_part_one(input), now.elapsed())
 }
 
-#[allow(unused)]
+#[cfg(not(tarpaulin_include))]
 pub fn part_two() -> (u32, std::time::Duration) {
     todo!("Implement day {} part two",the_day());
     let now = Instant::now();
@@ -25,9 +25,6 @@ pub fn part_two() -> (u32, std::time::Duration) {
     (do_part_two(input), now.elapsed())
 }
 
-
-
-#[allow(unused)]
 pub fn do_part_one(input: Input) -> u32 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
@@ -35,7 +32,7 @@ pub fn do_part_one(input: Input) -> u32 {
 0
 }
 
-#[allow(unused)]
+
 fn do_part_two(input: Input) -> u32 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();

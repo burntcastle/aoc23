@@ -39,6 +39,7 @@ impl Colours {
         }
     }
 }
+#[cfg(not(tarpaulin_include))]
 pub fn part_one() ->  (u32, std::time::Duration)  {
     let now = Instant::now();
     let path = "./inputs/2";
@@ -51,6 +52,7 @@ pub fn part_one() ->  (u32, std::time::Duration)  {
     let input = Input::new(input);
     (do_part_one(input, bag), now.elapsed())
 }
+#[cfg(not(tarpaulin_include))]
 pub fn part_two() ->  (u32, std::time::Duration)  {
     let now = Instant::now();
     let path = "./inputs/2";

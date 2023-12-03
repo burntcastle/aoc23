@@ -1,6 +1,7 @@
 use crate::utils::{Input, ProblemInput};
 use std::{collections::HashMap, io::BufRead, time::Instant};
 
+#[cfg(not(tarpaulin_include))]
 pub fn part_one() -> (u32, std::time::Duration) {
     let now = Instant::now();
     let path = "./inputs/3";
@@ -9,6 +10,7 @@ pub fn part_one() -> (u32, std::time::Duration) {
     (do_part_one(input), now.elapsed())
 }
 
+#[cfg(not(tarpaulin_include))]
 pub fn part_two() -> (u32, std::time::Duration) {
     let now = Instant::now();
     let path = "./inputs/3";
@@ -228,7 +230,9 @@ mod tests {
 ..592.....
 ......755.
 ...$.*....
-.664.598..";
+.664.598..
+..........
+..........";
         let input = ProblemInput::String(input);
         let result = do_part_two(Input::new(input));
         println!("Result: {}", result);

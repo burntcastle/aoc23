@@ -1,6 +1,7 @@
 use crate::utils::{Input, ProblemInput};
 use std::{io::prelude::*, time::Instant};
 
+#[cfg(not(tarpaulin_include))]
 pub fn part_one() -> (u32, std::time::Duration) {
     let path = "./inputs/1";
     let input = ProblemInput::File(path);
@@ -42,6 +43,7 @@ fn do_part_one(input: Input) -> (u32, std::time::Duration) {
     (total, now.elapsed())
 }
 
+#[cfg(not(tarpaulin_include))]
 pub fn part_two() -> (u32, std::time::Duration) {
     let path = "./inputs/1";
     let input = ProblemInput::File(path);
