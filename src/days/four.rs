@@ -88,20 +88,20 @@ fn do_part_two(input: Input) -> u32 {
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
     let mut total = 0;
-    let mut cards: Vec<&str> = vec!();
+    let mut cards: Vec<&str> = lines.clone();
     for (i,line) in lines.iter().enumerate(){
         cards.extend(get_winning_cards(lines.clone(), i,0));
     }
-    for line in cards{
-        total+= get_card_score(line);
-    }
-total
+//     for line in cards{
+//         total+= get_card_score(line);
+//     }
+    cards.len() as u32
 }
 
 fn get_winning_cards(cards: Vec<&str>, current: usize, step:usize) -> Vec<&str>{
     let step = step + 1;
+    // helpful for debugging
     // let indent =  "-".repeat(step);
-
     // println!("{}{}",indent, current+1);
     let mut results: Vec<&str> = vec!();
     let score = get_card_count(cards[current]) as usize;
