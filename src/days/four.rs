@@ -1,11 +1,11 @@
 use crate::utils::{Input, ProblemInput};
 use std::{ io::BufRead, time::Instant};
 
+#[cfg(not(tarpaulin_include))]
 pub fn the_day() -> u32 {
     4
 }
 
-#[cfg(not(tarpaulin_include))]
 pub fn part_one() -> (u32, std::time::Duration) {
     let now = Instant::now();
     let path = format!("./inputs/{}",the_day());
@@ -33,8 +33,6 @@ pub fn do_part_one(input: Input) -> u32 {
     }
 total
 }
-
-
 
 fn get_card_score(card:&str) -> u32 {
     let splits = card.split(|c: char| c == ':' || c=='|');
@@ -148,7 +146,7 @@ mod tests {
         let input = ProblemInput::String(input);
         let result = do_part_one(Input::new(input));
         println!("Result: {}", result);
-        assert_eq!(result, 4361);
+        assert_eq!(result, 13);
     }
     // fn test_part_two_single_line() {
     //     let input = "################";
@@ -168,6 +166,6 @@ mod tests {
         let input = ProblemInput::String(input);
         let result = do_part_two(Input::new(input));
         println!("Result: {}", result);
-        assert_eq!(result, 15);
+        assert_eq!(result, 30);
     }
 }
