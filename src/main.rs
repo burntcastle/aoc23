@@ -31,8 +31,7 @@ fn main() {
 
             }
             4 =>{
-                None
-                //Some((days::four::part_one(),days::four::part_two()))
+                Some((days::four::part_one(),days::four::part_two()))
             }
             _ => {
                 None
