@@ -50,11 +50,11 @@ fn get_card_score(card:&str) -> u32 {
 
 fn get_overlap_score(left: Vec<u32>, right: Vec<u32>) -> u32{
     let mut overlap = 0;
-    for i in 0..left.len(){
-        if right.contains(&left[i]){
+    for item in left{
+        if right.contains(&item){
             match overlap{
                 0 => overlap = 1,
-                _ => overlap= overlap*2,
+                _ => overlap *= 2,
             }
         }
     }
@@ -75,8 +75,8 @@ fn get_card_count(card:&str) -> u32 {
 
 fn get_overlap_count(left: Vec<u32>, right: Vec<u32>) -> u32{
     let mut overlap = 0;
-    for i in 0..left.len(){
-        if right.contains(&left[i]){
+    for item in left{
+        if right.contains(&item){
             overlap += 1
         }
     }
@@ -87,9 +87,8 @@ fn do_part_two(input: Input) -> u32 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
-    let mut total = 0;
     let mut cards: Vec<&str> = lines.clone();
-    for (i,line) in lines.iter().enumerate(){
+    for (i,_line) in lines.iter().enumerate(){
         cards.extend(get_winning_cards(lines.clone(), i,0));
     }
 //     for line in cards{
