@@ -1,6 +1,8 @@
 #![allow(unused)]
 use crate::utils::{Input, ProblemInput};
 use std::{io::BufRead, time::Instant, vec, ops::Range};
+use kdam::tqdm;
+
 
 #[cfg(not(tarpaulin_include))]
 pub fn the_day() -> u32 {
@@ -100,6 +102,7 @@ fn do_part_two(input: Input) -> i64 {
         .map(|x| x.parse::<i64>().unwrap())
         .collect::<Vec<i64>>();
     let mut complete_seeds: Vec<i64> = vec![];
+    
     for (i, seed) in (&seeds).iter().enumerate() {
         if i %2 == 1{
             complete_seeds.extend((seeds[i-1]..(seeds[i-1]+*seed)).collect::<Vec<i64>>());
@@ -109,7 +112,8 @@ fn do_part_two(input: Input) -> i64 {
     let mut new_seeds = seeds.clone();
 
     let mut new_conversion = false;
-    for (i, line) in lines.iter().enumerate() {
+    for (i, line) in tqdm!(lines.iter().enumerate()) {
+
         // skip line 1
         if i == 0 || line.trim().is_empty(){
             //println!("{:?}\n", seeds);
