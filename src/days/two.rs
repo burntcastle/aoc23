@@ -40,7 +40,7 @@ impl Colours {
     }
 }
 #[cfg(not(tarpaulin_include))]
-pub fn part_one() ->  (u32, std::time::Duration)  {
+pub fn part_one() ->  (i64, std::time::Duration)  {
     let now = Instant::now();
     let path = "./inputs/2";
     let input = ProblemInput::File(path);
@@ -53,7 +53,7 @@ pub fn part_one() ->  (u32, std::time::Duration)  {
     (do_part_one(input, bag), now.elapsed())
 }
 #[cfg(not(tarpaulin_include))]
-pub fn part_two() ->  (u32, std::time::Duration)  {
+pub fn part_two() ->  (i64, std::time::Duration)  {
     let now = Instant::now();
     let path = "./inputs/2";
     let input = ProblemInput::File(path);
@@ -61,7 +61,7 @@ pub fn part_two() ->  (u32, std::time::Duration)  {
     (do_part_two(input),now.elapsed())
 }
 
-pub fn do_part_one(input: Input, bag: Bag) -> u32 {
+pub fn do_part_one(input: Input, bag: Bag) ->  i64 {
     let lines = input.get_data().lines();
     //get game number
     let mut i = 1;
@@ -96,10 +96,10 @@ pub fn do_part_one(input: Input, bag: Bag) -> u32 {
         i += 1;
     }
 
-    valid_games
+    valid_games as i64
 }
 
-fn do_part_two(input: Input) -> u32 {
+fn do_part_two(input: Input) -> i64 {
     let lines = input.get_data().lines();
     //get game number
     let mut power = 0;
@@ -133,14 +133,20 @@ fn do_part_two(input: Input) -> u32 {
         power += min_bag.blue * min_bag.red * min_bag.green;
     }
 
-    power
+    power as i64
 }
 
 #[cfg(test)]
 mod tests {
     use crate::utils::ProblemInput;
-
     use super::*;
+
+    #[test]
+    #[should_panic]
+    fn test_invalid_colour(){
+        let _colour = Colours::from_string("purple");
+    }
+
     #[test]
     fn test_part_one_single_line() {
         let bag = Bag {

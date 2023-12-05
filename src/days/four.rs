@@ -5,8 +5,8 @@ use std::{ io::BufRead, time::Instant};
 pub fn the_day() -> u32 {
     4
 }
-
-pub fn part_one() -> (u32, std::time::Duration) {
+#[cfg(not(tarpaulin_include))]
+pub fn part_one() -> (i64, std::time::Duration) {
     let now = Instant::now();
     let path = format!("./inputs/{}",the_day());
     let input = ProblemInput::File(path.as_str());
@@ -15,7 +15,7 @@ pub fn part_one() -> (u32, std::time::Duration) {
 }
 
 #[cfg(not(tarpaulin_include))]
-pub fn part_two() -> (u32, std::time::Duration) {
+pub fn part_two() -> (i64, std::time::Duration) {
     let now = Instant::now();
     let path = format!("./inputs/{}",the_day());
     let input = ProblemInput::File(path.as_str());
@@ -23,7 +23,7 @@ pub fn part_two() -> (u32, std::time::Duration) {
     (do_part_two(input), now.elapsed())
 }
 
-pub fn do_part_one(input: Input) -> u32 {
+pub fn do_part_one(input: Input) -> i64 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
@@ -31,7 +31,7 @@ pub fn do_part_one(input: Input) -> u32 {
     for line in lines{
         total+= get_card_score(line);
     }
-total
+total as i64
 }
 
 fn get_card_score(card:&str) -> u32 {
@@ -81,7 +81,7 @@ fn get_overlap_count(left: Vec<u32>, right: Vec<u32>) -> u32{
     overlap
 }
 
-fn do_part_two(input: Input) -> u32 {
+fn do_part_two(input: Input) -> i64 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
@@ -92,7 +92,7 @@ fn do_part_two(input: Input) -> u32 {
 //     for line in cards{
 //         total+= get_card_score(line);
 //     }
-    cards.len() as u32
+    cards.len() as i64
 }
 
 fn get_winning_cards(cards: Vec<&str>, current: usize, step:usize) -> Vec<&str>{

@@ -1,6 +1,7 @@
 use crate::utils::{Input, ProblemInput};
 use std::{ io::BufRead, time::Instant};
 
+#[cfg(not(tarpaulin_include))]
 pub fn the_day() -> u32 {
     4
 }
@@ -65,6 +66,7 @@ mod tests {
         println!("Result: {}", result);
         assert_eq!(result, 4361);
     }
+    #[test]
     fn test_part_two_single_line() {
         let input = "################";
         let input = ProblemInput::String(input);

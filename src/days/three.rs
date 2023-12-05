@@ -2,7 +2,7 @@ use crate::utils::{Input, ProblemInput};
 use std::{collections::HashMap, io::BufRead, time::Instant};
 
 #[cfg(not(tarpaulin_include))]
-pub fn part_one() -> (u32, std::time::Duration) {
+pub fn part_one() -> (i64, std::time::Duration) {
     let now = Instant::now();
     let path = "./inputs/3";
     let input = ProblemInput::File(path);
@@ -11,7 +11,7 @@ pub fn part_one() -> (u32, std::time::Duration) {
 }
 
 #[cfg(not(tarpaulin_include))]
-pub fn part_two() -> (u32, std::time::Duration) {
+pub fn part_two() -> (i64, std::time::Duration) {
     let now = Instant::now();
     let path = "./inputs/3";
     let input = ProblemInput::File(path);
@@ -26,7 +26,7 @@ pub fn is_symbol(c: char) -> bool {
     symbols().contains(&c)
 }
 
-pub fn do_part_one(input: Input) -> u32 {
+pub fn do_part_one(input: Input) -> i64 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
@@ -66,7 +66,7 @@ pub fn do_part_one(input: Input) -> u32 {
         }
     }
 
-    total
+    total as i64
 }
 fn check_row(
     above: Option<&str>,
@@ -77,7 +77,7 @@ fn check_row(
 ) -> bool {
     let length = current.len();
     // the || is a lazy or so only executes if the first is false
-    let results = (match above {
+    let results = match above {
         Some(x) => {
             let x: Vec<char> = x.chars().collect();
             check_for_char(x.get(get_slice_size(start, end, length)))
@@ -89,13 +89,14 @@ fn check_row(
             check_for_char(x.get(get_slice_size(start, end, length)))
         }
         None => false,
-    }) || {
+    } || {
         let x: Vec<char> = current.chars().collect();
         check_for_char(x.get(get_slice_size(start, end, length)))
     };
 
     results
 }
+
 fn get_slice_size(start: i32, end: i32, length: usize) -> std::ops::Range<usize> {
     let start = start - 1;
     let end = end + 1;
@@ -121,7 +122,7 @@ fn check_for_char(char: Option<&[char]>) -> bool {
     }
 }
 
-fn do_part_two(input: Input) -> u32 {
+fn do_part_two(input: Input) -> i64 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
@@ -156,7 +157,7 @@ fn do_part_two(input: Input) -> u32 {
         }
     }
 
-    total
+    total as i64
 }
 
 fn get_gear_ratio(row: usize, col: usize, numbers: &[Vec<(u32, u32)>]) -> u32 {
@@ -192,6 +193,16 @@ mod tests {
     use crate::utils::ProblemInput;
 
     #[test]
+    fn test_check_for_char(){
+        assert_eq!(check_for_char(None), false);
+    }
+
+    #[test]
+    fn test_check_row(){
+        assert_eq!(check_row(None, None, "123", 0, 3), false);
+    }
+
+    #[test]
     fn test_part_one_single_line() {
         let input = "*........#
 467...114.
@@ -212,7 +223,13 @@ mod tests {
 ..592.....
 ......755.
 ...$.*....
-.664.598..";
+.664.598..
+..........
+..........
+...999....
+..........
+....10....
+..........";
         let input = ProblemInput::String(input);
         let result = do_part_one(Input::new(input));
         println!("Result: {}", result);

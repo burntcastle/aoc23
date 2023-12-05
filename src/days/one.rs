@@ -2,14 +2,14 @@ use crate::utils::{Input, ProblemInput};
 use std::{io::prelude::*, time::Instant};
 
 #[cfg(not(tarpaulin_include))]
-pub fn part_one() -> (u32, std::time::Duration) {
+pub fn part_one() -> (i64, std::time::Duration) {
     let path = "./inputs/1";
     let input = ProblemInput::File(path);
     let input = Input::new(input);
     do_part_one(input)
 }
 
-fn do_part_one(input: Input) -> (u32, std::time::Duration) {
+fn do_part_one(input: Input) -> (i64, std::time::Duration) {
     let now = Instant::now();
 
     let lines = input.get_data().lines();
@@ -40,17 +40,17 @@ fn do_part_one(input: Input) -> (u32, std::time::Duration) {
 
         total += (first_number * 10) + second_number;
     }
-    (total, now.elapsed())
+    (total as i64, now.elapsed())
 }
 
 #[cfg(not(tarpaulin_include))]
-pub fn part_two() -> (u32, std::time::Duration) {
+pub fn part_two() -> (i64, std::time::Duration) {
     let path = "./inputs/1";
     let input = ProblemInput::File(path);
     let input = Input::new(input);
     do_part_two(input)
 }
-pub fn do_part_two(input: Input) -> (u32, std::time::Duration) {
+pub fn do_part_two(input: Input) -> (i64, std::time::Duration) {
     let now = Instant::now();
     let lines = input.get_data().lines();
 
@@ -116,7 +116,7 @@ pub fn do_part_two(input: Input) -> (u32, std::time::Duration) {
         }
         total += (first_number * 10) + second_number;
     }
-    (total, now.elapsed())
+    (total as i64, now.elapsed())
 }
 
 #[cfg(test)]
