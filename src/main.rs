@@ -33,7 +33,7 @@ fn main() {
                 (Some(days::four::part_one()),Some(days::four::part_two()))
             }
             5 =>{
-                (Some(days::five::part_one()),None)
+                (Some(days::five::part_one()),Some(days::five::part_two()))
             }
             _ => {
                 (None,None)
