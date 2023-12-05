@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 kdam = "0.5.1"
+rayon = "1.8"

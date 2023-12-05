@@ -35,11 +35,15 @@ fn main() {
             5 =>{
                 (Some(days::five::part_one()),Some(days::five::part_two()))
             }
+            6 =>{
+                (Some(days::six::part_one()),None)
+                //(Some(days::six::part_one()),Some(days::six::part_two()))
+            }
             _ => {
                 (None,None)
             }
         };
-
+        println!();
         match scores {
             (Some((r1,e1)),Some((r2,e2))) => {
                 println!("Part One: {} ({:.2?})", r1, e1);

@@ -1,7 +1,8 @@
 #![allow(unused)]
 use crate::utils::{Input, ProblemInput};
-use std::{io::BufRead, time::Instant, vec, ops::Range};
+use std::{io::BufRead, time::Instant, vec, ops::{Range, ControlFlow}};
 use kdam::tqdm;
+use rayon::prelude::*;
 
 
 #[cfg(not(tarpaulin_include))]
@@ -32,70 +33,58 @@ pub fn do_part_one(input: Input) -> i64 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
-    let seeds = lines.first().unwrap().split(":").collect::<Vec<&str>>();
-    let seeds = seeds[1].trim().split(" ").collect::<Vec<&str>>();
+    let seeds = lines.first().unwrap().split(':').collect::<Vec<&str>>();
+    let seeds = seeds[1].trim().split(' ').collect::<Vec<&str>>();
 
     let mut seeds = seeds
         .iter()
         .map(|x| x.parse::<i64>().unwrap())
         .collect::<Vec<i64>>();
-
-    let mut new_seeds = seeds.clone();
-
-    let mut new_conversion = false;
-    for (i, line) in lines.iter().enumerate() {
-        // skip line 1
-        if i == 0 || line.trim().is_empty(){
-            //println!("{:?}\n", seeds);
-            continue;
-        }
-        if line.trim().contains("-to-"){
-            //println!("{}", line);
-            new_conversion = true;
-            seeds = new_seeds;
-            new_seeds = seeds.clone();
-            continue;
-        }
-        if new_conversion {
-            let conversion = line.trim().split(" ").collect::<Vec<&str>>();
-            let conversion = conversion
-                .iter()
-                .map(|x| x.trim().parse::<i64>().unwrap())
-                .collect::<Vec<i64>>();
-            let dest = conversion[0];
-            let source = conversion[1];
-            let len = conversion[2];
-            //combine conversions
-            for (i, seed) in seeds.iter().enumerate() {
-                let out  = do_conversion(source, dest, len, *seed);
-                if out != *seed {
-                    new_seeds[i] = out;
-                }   
+           
+        let mut rows: Vec<Vec<(i64, i64, i64)>> = vec![];
+        let mut row: Vec<(i64, i64, i64)> = vec![];
+        for (i, line) in lines.iter().enumerate() {
+            let mut conversions: Vec<(i64, i64, i64)> = vec![];
+            // skip line 1
+            if i < 2 || line.trim().contains("-to-"){
+                continue;
+            } else if line.trim().is_empty() {
+                rows.push(row);
+                row = vec![];
+                continue;
+            }else{
+                let conversion = line.trim().split(' ').collect::<Vec<&str>>();
+                let conversion = conversion
+                    .iter()
+                    .map(|x| x.trim().parse::<i64>().unwrap())
+                    .collect::<Vec<i64>>();
+                let dest = conversion[0];
+                let source = conversion[1];
+                let len = conversion[2];
+                let item = (dest, source, len);
+                row.push(item);
             }
         }
-    }
-    seeds = new_seeds;
     
-    
-    println!("FINAL:{:?}", seeds);
-    *seeds.iter().min().unwrap() 
-}
+        for row in rows.iter(){
+            seeds.par_iter_mut().for_each(|seed|{
+                let result = row.iter().filter(|(d,s,l)|*seed >= *s && *seed< (*s+*l)).collect::<Vec<&(i64,i64,i64)>>().first().copied();
+                if let Some((d,s,l)) = result{
+                    *seed += (d-s);
+                }
+            })
+        }
 
-fn do_conversion(source: i64, dest: i64, len: i64, input: i64) -> i64 {
-
-    if input >= source && input < (source + len) {
-        input + (dest - source)
-    } else {
-        input
-    }
+        //println!("FINAL:{:?}", seeds);
+        *seeds.iter().min().unwrap()  
 }
 
 fn do_part_two(input: Input) -> i64 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
-    let seeds = lines.first().unwrap().split(":").collect::<Vec<&str>>();
-    let seeds = seeds[1].trim().split(" ").collect::<Vec<&str>>();
+    let seeds = lines.first().unwrap().split(':').collect::<Vec<&str>>();
+    let seeds = seeds[1].trim().split(' ').collect::<Vec<&str>>();
 
     let mut seeds = seeds
         .iter()
@@ -103,31 +92,25 @@ fn do_part_two(input: Input) -> i64 {
         .collect::<Vec<i64>>();
     let mut complete_seeds: Vec<i64> = vec![];
     
-    for (i, seed) in (&seeds).iter().enumerate() {
+    for (i, seed) in tqdm!(seeds.iter().enumerate(), desc="Calculating complete seeds", position=0) {
         if i %2 == 1{
             complete_seeds.extend((seeds[i-1]..(seeds[i-1]+*seed)).collect::<Vec<i64>>());
         }
     }
-    let mut seeds = complete_seeds.clone();
-    let mut new_seeds = seeds.clone();
-
-    let mut new_conversion = false;
-    for (i, line) in tqdm!(lines.iter().enumerate()) {
-
+    let mut seeds = complete_seeds;
+    let mut rows: Vec<Vec<(i64, i64, i64)>> = vec![];
+    let mut row: Vec<(i64, i64, i64)> = vec![];
+    for (i, line) in tqdm!(lines.iter().enumerate(), desc="Parsing lines", position=1) {
+        let mut conversions: Vec<(i64, i64, i64)> = vec![];
         // skip line 1
-        if i == 0 || line.trim().is_empty(){
-            //println!("{:?}\n", seeds);
+        if i < 2 || line.trim().contains("-to-"){
             continue;
-        }
-        if line.trim().contains("-to-"){
-            //println!("{}", line);
-            new_conversion = true;
-            seeds = new_seeds;
-            new_seeds = seeds.clone();
+        } else if line.trim().is_empty() {
+            rows.push(row);
+            row = vec![];
             continue;
-        }
-        if new_conversion {
-            let conversion = line.trim().split(" ").collect::<Vec<&str>>();
+        }else{
+            let conversion = line.trim().split(' ').collect::<Vec<&str>>();
             let conversion = conversion
                 .iter()
                 .map(|x| x.trim().parse::<i64>().unwrap())
@@ -135,19 +118,23 @@ fn do_part_two(input: Input) -> i64 {
             let dest = conversion[0];
             let source = conversion[1];
             let len = conversion[2];
-            //combine conversions
-            for (i, seed) in seeds.iter().enumerate() {
-                let out  = do_conversion(source, dest, len, *seed);
-                if out != *seed {
-                    new_seeds[i] = out;
-                }   
-            }
+            let item = (dest, source, len);
+            row.push(item);
         }
     }
-    seeds = new_seeds;
+
+    for row in tqdm!(rows.iter(), desc="Calculating locations", position=2){
+        seeds.par_iter_mut().for_each(|seed|{
+            let result = row.iter().filter(|(d,s,l)|*seed >= *s && *seed< (*s+*l)).collect::<Vec<&(i64,i64,i64)>>().first().copied();
+            if let Some((d,s,l)) = result{
+                *seed += (d-s);
+            }
+        })
+    }
+
+
     
-    
-    println!("FINAL:{:?}", seeds);
+    //println!("FINAL:{:?}", seeds);
     *seeds.iter().min().unwrap() 
     
 }
@@ -158,14 +145,6 @@ mod tests {
     use super::*;
     use crate::utils::ProblemInput;
 
-    #[test]
-    fn test_part_one_single_line() {
-        let input = "################";
-        let input = ProblemInput::String(input);
-        let result = do_part_one(Input::new(input));
-        println!("Result: {}", result);
-        assert_eq!(result, 0);
-    }
     #[test]
     fn test_part_one_multi_line() {
         let input = "seeds: 79 14 55 13
@@ -207,14 +186,7 @@ mod tests {
         println!("Result: {}", result);
         assert_eq!(result, 35);
     }
-    #[test]
-    fn test_part_two_single_line() {
-        let input = "################";
-        let input = ProblemInput::String(input);
-        let result = do_part_two(Input::new(input));
-        println!("Result: {}", result);
-        assert_eq!(result, 0);
-    }
+
     #[test]
     fn test_part_two_multi_line() {
         let input = "seeds: 79 14 55 13
