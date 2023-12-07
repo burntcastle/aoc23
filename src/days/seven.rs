@@ -1,6 +1,7 @@
 use crate::utils::{Input, ProblemInput};
 use core::panic;
-use std::{collections::HashMap, io::BufRead, time::Instant, cmp::Ordering};
+use itertools::Itertools;
+use std::{cmp::Ordering, collections::HashMap, io::BufRead, time::Instant};
 
 #[cfg(not(tarpaulin_include))]
 pub fn the_day() -> u32 {
@@ -18,7 +19,6 @@ pub fn part_one() -> (i64, std::time::Duration) {
 
 #[cfg(not(tarpaulin_include))]
 pub fn part_two() -> (i64, std::time::Duration) {
-    todo!("Implement day {} part two", the_day());
     let now = Instant::now();
     let path = format!("./inputs/{}", the_day());
     let input = ProblemInput::File(path.as_str());
@@ -32,24 +32,23 @@ pub fn do_part_one(input: Input) -> i64 {
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
     let mut results: Vec<(&str, i64)> = vec![];
     for line in lines {
-        let line = line.trim().split(" ").collect::<Vec<&str>>();
+        let line = line.trim().split(' ').collect::<Vec<&str>>();
         let hand = line[0].trim();
         let bid = line[1].trim().parse::<i64>().unwrap();
         results.push((hand, bid));
     }
     results.sort_by(|a, b| sort_hands(a.0, b.0));
     let mut total = 0;
-    for (i, (k,v)) in results.iter().enumerate() {
+    for (i, (_k, v)) in results.iter().enumerate() {
         total += (i as i64 + 1) * v;
-    }   
+    }
     total
 }
 
 fn sort_hands(hand_a: &str, hand_b: &str) -> Ordering {
-    
     let ht_a = get_hand_type(hand_a);
     let ht_b = get_hand_type(hand_b);
-    
+
     if ht_a == ht_b {
         let hand_a = hand_a.chars().collect::<Vec<char>>();
         let hand_b = hand_b.chars().collect::<Vec<char>>();
@@ -65,13 +64,12 @@ fn sort_hands(hand_a: &str, hand_b: &str) -> Ordering {
             }
         }
         panic!("Shouldn't have identical hands")
-
     } else if ht_a < ht_b {
         return Ordering::Greater;
-    } else if ht_b < ht_a{
+    } else if ht_b < ht_a {
         return Ordering::Less;
-    }else{
-    panic!("Shouldn't have identical hands or get herre?")
+    } else {
+        panic!("Shouldn't have identical hands or get herre?")
     }
 }
 
@@ -107,7 +105,7 @@ fn get_hand_type(hand: &str) -> i64 {
         }
     }
     let mut result: Vec<(&i64, &i64)> = result.iter().collect();
-  
+
     result.sort_by(|a, b| b.1.cmp(a.1));
     let max_count = result.iter().max_by(|a, b| a.1.cmp(&b.1)).unwrap();
     // now calculate the result
@@ -139,7 +137,7 @@ fn get_hand_type(hand: &str) -> i64 {
             // High card
             6
         }
-        _ =>{
+        _ => {
             panic!("Invalid hand")
         }
     }
@@ -151,24 +149,24 @@ fn do_part_two(input: Input) -> i64 {
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
     let mut results: Vec<(&str, i64)> = vec![];
     for line in lines {
-        let line = line.trim().split(" ").collect::<Vec<&str>>();
+        let line = line.trim().split(' ').collect::<Vec<&str>>();
         let hand = line[0].trim();
         let bid = line[1].trim().parse::<i64>().unwrap();
         results.push((hand, bid));
     }
-    results.sort_by(|a, b| sort_hands(a.0, b.0));
+    results.sort_by(|a, b| sort_hands_two(a.0, b.0));
+    
     let mut total = 0;
-    for (i, (k,v)) in results.iter().enumerate() {
+    for (i, (_k, v)) in results.iter().enumerate() {
         total += (i as i64 + 1) * v;
-    }   
+    }
     total
 }
 
 fn sort_hands_two(hand_a: &str, hand_b: &str) -> Ordering {
-    
     let ht_a = get_hand_type_two(hand_a);
     let ht_b = get_hand_type_two(hand_b);
-    
+
     if ht_a == ht_b {
         let hand_a = hand_a.chars().collect::<Vec<char>>();
         let hand_b = hand_b.chars().collect::<Vec<char>>();
@@ -184,26 +182,69 @@ fn sort_hands_two(hand_a: &str, hand_b: &str) -> Ordering {
             }
         }
         panic!("Shouldn't have identical hands")
-
     } else if ht_a < ht_b {
         return Ordering::Greater;
-    } else if ht_b < ht_a{
+    } else if ht_b < ht_a {
         return Ordering::Less;
-    }else{
-    panic!("Shouldn't have identical hands or get herre?")
+    } else {
+        panic!("Shouldn't have identical hands or get here?")
+    }
+}
+
+fn get_value_of_card_two(card: &char) -> i64 {
+    let cards: [char; 13] = [
+        'A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J',
+    ];
+
+    13 - cards.iter().position(|&x| x == *card).unwrap() as i64
+}
+
+fn get_hand_type_two(hand: &str) -> i64 {
+    
+    if hand == "JJJJJ" {
+        return 0;
+    }
+    let cards = hand.chars().collect::<Vec<char>>();
+    if cards.contains(&'J') {
+        let other_cards = cards.iter().filter(|&x| *x != 'J').collect::<Vec<&char>>();
+        let other_cards: Vec<char> = other_cards.into_iter().copied().collect();
+        let other_cards_str = other_cards.iter().cloned().collect::<String>();
+        let other_cards_str = other_cards_str.as_str();
+        //println!("  {}", other_cards_str);
+        let mut other_cards_full: Vec<char> = vec!();
+        for _i in 0..(5-other_cards.len()){
+            other_cards_full.extend(other_cards.clone());
+        }
+        let combos = other_cards_full.iter().combinations(5 - other_cards.len());
+        let combo_len = combos.try_len().unwrap();
+        if combo_len == 0 {
+            let first = other_cards.first().unwrap();
+            let hand_str = [*first; 5];
+            let hand_str = hand_str.iter().collect::<String>();
+            return get_hand_type_three(hand_str.as_str());
+        }
+        //let mut scores: Vec<i64> = vec![];
+        let mut min_score = 10;
+        let mut _best = "".to_string();
+        for combo in combos {
+            let combo = combo.iter().cloned().collect::<String>();
+            let combo = combo.as_str();
+            let hand_str = format!("{}{}", other_cards_str, combo);
+            let score =get_hand_type_three(&hand_str);
+            if score < min_score{
+                min_score = score;
+                _best = hand_str.clone();
+            }
+        }
+
+        min_score
+    } else {
+        get_hand_type_three(hand)
     }
 }
 
 
-fn get_value_of_card_two(card: &char) -> i64 {
-    let cards = [
-        'A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J'
-    ];
-
-    12 - cards.iter().position(|&x| x == *card).unwrap() as i64
-}
-
-fn get_hand_type_two(hand: &str) -> i64 {
+fn get_hand_type_three(hand: &str) -> i64 {
     let cards = hand.chars().collect::<Vec<char>>();
 
     // Five of a kind 0
@@ -227,9 +268,9 @@ fn get_hand_type_two(hand: &str) -> i64 {
         }
     }
     let mut result: Vec<(&i64, &i64)> = result.iter().collect();
-  
+
     result.sort_by(|a, b| b.1.cmp(a.1));
-    let max_count = result.iter().max_by(|a, b| a.1.cmp(&b.1)).unwrap();
+    let max_count = result.iter().max_by(|a, b| a.1.cmp(b.1)).unwrap();
     // now calculate the result
     match result.len() {
         1 => {
@@ -259,12 +300,11 @@ fn get_hand_type_two(hand: &str) -> i64 {
             // High card
             6
         }
-        _ =>{
+        _ => {
             panic!("Invalid hand")
         }
     }
 }
-
 
 
 #[cfg(test)]
@@ -272,7 +312,6 @@ fn get_hand_type_two(hand: &str) -> i64 {
 mod tests {
     use super::*;
     use crate::utils::ProblemInput;
-
 
     #[test]
     fn test_part_one_multi_line() {
@@ -288,13 +327,26 @@ mod tests {
         assert_eq!(result, 6440);
     }
 
-//     #[test]
-//     fn test_part_two_multi_line() {
-//         let input = "################
-// ################";
-//         let input = ProblemInput::String(input);
-//         let result = do_part_two(Input::new(input));
-//         println!("Result: {}", result);
-//         assert_eq!(result, 467835);
-//     }
+    #[test]
+    fn test_part_two_multi_line() {
+        let input = "32T3K 765
+        T55J5 684
+        KK677 28
+        KTJJT 220
+        QQQJA 483";
+        let input = ProblemInput::String(input);
+        let result = do_part_two(Input::new(input));
+        println!("Result: {}", result);
+        assert_eq!(result, 5905);
+    }
+    
+    #[test]
+    fn test_part_two_multi_line_two() {
+        let input = "JAAKK 1
+        JJJAK 2";
+        let input = ProblemInput::String(input);
+        let result = do_part_two(Input::new(input));
+        println!("Result: {}", result);
+        assert_eq!(result, 5);
+    }
 }
