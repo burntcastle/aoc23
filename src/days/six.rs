@@ -109,14 +109,6 @@ mod tests {
         assert_eq!(result,288);
     }
 
-    #[test]
-    fn test_part_two_single_line() {
-        let input = "################";
-        let input = ProblemInput::String(input);
-        let result = do_part_two(Input::new(input));
-        println!("Result: {}", result);
-        assert_eq!(result, 0);
-    }
 
     #[test]
     fn test_part_two_multi_line() {

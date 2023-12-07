@@ -49,27 +49,28 @@ fn sort_hands(hand_a: &str, hand_b: &str) -> Ordering {
     let ht_a = get_hand_type(hand_a);
     let ht_b = get_hand_type(hand_b);
 
-    if ht_a == ht_b {
-        let hand_a = hand_a.chars().collect::<Vec<char>>();
-        let hand_b = hand_b.chars().collect::<Vec<char>>();
-        for i in 0..5 {
-            let a_value = get_value_of_card(&hand_a[i]);
-            let b_value = get_value_of_card(&hand_b[i]);
-            if a_value > b_value {
-                //println!("{} > {}", a_value, b_value);
-                return Ordering::Greater;
-            } else if a_value < b_value {
-                //println!("{} < {}", a_value, b_value);
-                return Ordering::Less;
+    match &ht_a.cmp(&ht_b) {
+        Ordering::Equal => {
+            let hand_a = hand_a.chars().collect::<Vec<char>>();
+            let hand_b = hand_b.chars().collect::<Vec<char>>();
+            for i in 0..5 {
+                let a_value = get_value_of_card(&hand_a[i]);
+                let b_value = get_value_of_card(&hand_b[i]);
+                match &a_value.cmp(&b_value) {
+                    Ordering::Equal => {
+                    }
+                    Ordering::Greater => {
+                        return Ordering::Greater;
+                    }
+                    Ordering::Less => {
+                        return Ordering::Less;
+                    }
+                }
             }
+            panic!("Shouldn't have identical hands")
         }
-        panic!("Shouldn't have identical hands")
-    } else if ht_a < ht_b {
-        return Ordering::Greater;
-    } else if ht_b < ht_a {
-        return Ordering::Less;
-    } else {
-        panic!("Shouldn't have identical hands or get herre?")
+        Ordering::Greater => Ordering::Less,
+        Ordering::Less => Ordering::Greater,
     }
 }
 
@@ -107,7 +108,7 @@ fn get_hand_type(hand: &str) -> i64 {
     let mut result: Vec<(&i64, &i64)> = result.iter().collect();
 
     result.sort_by(|a, b| b.1.cmp(a.1));
-    let max_count = result.iter().max_by(|a, b| a.1.cmp(&b.1)).unwrap();
+    let max_count = result.iter().max_by(|a, b| a.1.cmp(b.1)).unwrap();
     // now calculate the result
     match result.len() {
         1 => {
@@ -155,7 +156,7 @@ fn do_part_two(input: Input) -> i64 {
         results.push((hand, bid));
     }
     results.sort_by(|a, b| sort_hands_two(a.0, b.0));
-    
+
     let mut total = 0;
     for (i, (_k, v)) in results.iter().enumerate() {
         total += (i as i64 + 1) * v;
@@ -166,28 +167,28 @@ fn do_part_two(input: Input) -> i64 {
 fn sort_hands_two(hand_a: &str, hand_b: &str) -> Ordering {
     let ht_a = get_hand_type_two(hand_a);
     let ht_b = get_hand_type_two(hand_b);
-
-    if ht_a == ht_b {
-        let hand_a = hand_a.chars().collect::<Vec<char>>();
-        let hand_b = hand_b.chars().collect::<Vec<char>>();
-        for i in 0..5 {
-            let a_value = get_value_of_card_two(&hand_a[i]);
-            let b_value = get_value_of_card_two(&hand_b[i]);
-            if a_value > b_value {
-                //println!("{} > {}", a_value, b_value);
-                return Ordering::Greater;
-            } else if a_value < b_value {
-                //println!("{} < {}", a_value, b_value);
-                return Ordering::Less;
+    match &ht_a.cmp(&ht_b) {
+        Ordering::Equal => {
+            let hand_a = hand_a.chars().collect::<Vec<char>>();
+            let hand_b = hand_b.chars().collect::<Vec<char>>();
+            for i in 0..5 {
+                let a_value = get_value_of_card_two(&hand_a[i]);
+                let b_value = get_value_of_card_two(&hand_b[i]);
+                match &a_value.cmp(&b_value) {
+                    Ordering::Greater => {
+                        return Ordering::Greater;
+                    }
+                    Ordering::Less => {
+                        return Ordering::Less;
+                    }
+                    Ordering::Equal => {
+                    }
+                }
             }
+            panic!("No items in loop");
         }
-        panic!("Shouldn't have identical hands")
-    } else if ht_a < ht_b {
-        return Ordering::Greater;
-    } else if ht_b < ht_a {
-        return Ordering::Less;
-    } else {
-        panic!("Shouldn't have identical hands or get here?")
+        Ordering::Greater => Ordering::Less,
+        Ordering::Less => Ordering::Greater,
     }
 }
 
@@ -200,7 +201,6 @@ fn get_value_of_card_two(card: &char) -> i64 {
 }
 
 fn get_hand_type_two(hand: &str) -> i64 {
-    
     if hand == "JJJJJ" {
         return 0;
     }
@@ -211,8 +211,8 @@ fn get_hand_type_two(hand: &str) -> i64 {
         let other_cards_str = other_cards.iter().cloned().collect::<String>();
         let other_cards_str = other_cards_str.as_str();
         //println!("  {}", other_cards_str);
-        let mut other_cards_full: Vec<char> = vec!();
-        for _i in 0..(5-other_cards.len()){
+        let mut other_cards_full: Vec<char> = vec![];
+        for _i in 0..(5 - other_cards.len()) {
             other_cards_full.extend(other_cards.clone());
         }
         let combos = other_cards_full.iter().combinations(5 - other_cards.len());
@@ -230,8 +230,8 @@ fn get_hand_type_two(hand: &str) -> i64 {
             let combo = combo.iter().cloned().collect::<String>();
             let combo = combo.as_str();
             let hand_str = format!("{}{}", other_cards_str, combo);
-            let score =get_hand_type_three(&hand_str);
-            if score < min_score{
+            let score = get_hand_type_three(&hand_str);
+            if score < min_score {
                 min_score = score;
                 _best = hand_str.clone();
             }
@@ -242,7 +242,6 @@ fn get_hand_type_two(hand: &str) -> i64 {
         get_hand_type_three(hand)
     }
 }
-
 
 fn get_hand_type_three(hand: &str) -> i64 {
     let cards = hand.chars().collect::<Vec<char>>();
@@ -306,7 +305,6 @@ fn get_hand_type_three(hand: &str) -> i64 {
     }
 }
 
-
 #[cfg(test)]
 #[allow(unused)]
 mod tests {
@@ -339,7 +337,7 @@ mod tests {
         println!("Result: {}", result);
         assert_eq!(result, 5905);
     }
-    
+
     #[test]
     fn test_part_two_multi_line_two() {
         let input = "JAAKK 1
