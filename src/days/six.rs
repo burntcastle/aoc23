@@ -24,8 +24,6 @@ pub fn part_two() -> (i64, std::time::Duration) {
     (do_part_two(input), now.elapsed())
 }
 
-
-
 pub fn do_part_one(input: Input) -> i64 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
@@ -56,9 +54,7 @@ pub fn do_part_one(input: Input) -> i64 {
 
     let mut total: i64 = 1;    
     for (i,time) in times.iter().enumerate() {
-        //let possible 
         let distance = distances[i];
-        //let hold = (time +(time^2 -4*distance)^0.05);
         let mut possible :Vec<i64>=vec![];
         for h in 0..time+1{
             let travelled =   h*time -(h.pow(2));
@@ -84,23 +80,15 @@ fn do_part_two(input: Input) -> i64 {
     for line in lines {
         if line.contains("Time"){
             let line = line.split(':').collect::<Vec<&str>>();
-            //let line: Vec<&str> = line[1].trim().split(' ').collect::<Vec<&str>>();
             time = line[1].replace(' ', "").parse::<i64>().unwrap();
             
         } else if line.contains("Distance"){
             let line = line.split(':').collect::<Vec<&str>>();
-            //let line = line[1].trim().split(' ').collect::<Vec<&str>>();
             distance = line[1].replace(' ', "").parse::<i64>().unwrap();
         }
     }
-
-    println!("Time: {}, Distance: {}",time,distance);  
     let minima = (time as f64 - ((time as f64).powf(2.0) - 4.0 * distance as f64).sqrt())/ 2.0;
     let maxima = (time as f64 + ((time as f64).powf(2.0) - 4.0 * distance as f64).sqrt())/2.0;
-
-    println!("Max: {}, Min: {}",maxima, minima);
-
-    
    maxima.floor() as i64 - minima.ceil() as i64 +1
 }
 
@@ -120,6 +108,7 @@ mod tests {
         println!("Result: {}", result);
         assert_eq!(result,288);
     }
+
     #[test]
     fn test_part_two_single_line() {
         let input = "################";
@@ -128,6 +117,7 @@ mod tests {
         println!("Result: {}", result);
         assert_eq!(result, 0);
     }
+
     #[test]
     fn test_part_two_multi_line() {
         let input = "Time:      7  15   30
