@@ -103,7 +103,7 @@ fn get_slice_size(start: i32, end: i32, length: usize) -> std::ops::Range<usize>
     let mut out_start = 0;
     let mut out_end = 0;
     match start {
-        x if x < 0 =>(),
+        x if x < 0 => (),
         x if x > length as i32 => out_start = length,
         _ => out_start = start as usize,
     }
@@ -130,7 +130,7 @@ fn do_part_two(input: Input) -> i64 {
     let mut numbers = vec![vec![(0, 0); lines.first().unwrap().len()]; lines.len()];
     let mut num_unique = 0;
     // Build vector of numbers
-    for (i,line) in lines.iter().enumerate() {
+    for (i, line) in lines.iter().enumerate() {
         let splits = line.split(|c: char| c == '.' || is_symbol(c));
         let mut place_along_string = 0;
         for split in splits {
@@ -148,7 +148,7 @@ fn do_part_two(input: Input) -> i64 {
         }
     }
     let mut total = 0;
-    for (i,line) in lines.iter().enumerate() {
+    for (i, line) in lines.iter().enumerate() {
         let chars = line.chars();
         for (j, c) in chars.enumerate() {
             if c == '*' {
@@ -193,12 +193,12 @@ mod tests {
     use crate::utils::ProblemInput;
 
     #[test]
-    fn test_check_for_char(){
+    fn test_check_for_char() {
         assert_eq!(check_for_char(None), false);
     }
 
     #[test]
-    fn test_check_row(){
+    fn test_check_row() {
         assert_eq!(check_row(None, None, "123", 0, 3), false);
     }
 

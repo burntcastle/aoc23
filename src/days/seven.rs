@@ -57,8 +57,7 @@ fn sort_hands(hand_a: &str, hand_b: &str) -> Ordering {
                 let a_value = get_value_of_card(&hand_a[i]);
                 let b_value = get_value_of_card(&hand_b[i]);
                 match &a_value.cmp(&b_value) {
-                    Ordering::Equal => {
-                    }
+                    Ordering::Equal => {}
                     Ordering::Greater => {
                         return Ordering::Greater;
                     }
@@ -181,8 +180,7 @@ fn sort_hands_two(hand_a: &str, hand_b: &str) -> Ordering {
                     Ordering::Less => {
                         return Ordering::Less;
                     }
-                    Ordering::Equal => {
-                    }
+                    Ordering::Equal => {}
                 }
             }
             panic!("No items in loop");
@@ -216,14 +214,7 @@ fn get_hand_type_two(hand: &str) -> i64 {
             other_cards_full.extend(other_cards.clone());
         }
         let combos = other_cards_full.iter().combinations(5 - other_cards.len());
-        let combo_len = combos.try_len().unwrap();
-        if combo_len == 0 {
-            let first = other_cards.first().unwrap();
-            let hand_str = [*first; 5];
-            let hand_str = hand_str.iter().collect::<String>();
-            return get_hand_type_three(hand_str.as_str());
-        }
-        //let mut scores: Vec<i64> = vec![];
+
         let mut min_score = 10;
         let mut _best = "".to_string();
         for combo in combos {
@@ -312,6 +303,61 @@ mod tests {
     use crate::utils::ProblemInput;
 
     #[test]
+    fn test_panics() {
+        let res = std::panic::catch_unwind(|| sort_hands("KK234", "KK234"));
+        assert!(res.is_err());
+
+        let res = std::panic::catch_unwind(|| get_hand_type("XXXXX123"));
+        assert!(res.is_err());
+        let res = std::panic::catch_unwind(|| get_hand_type_two("XXXXX123"));
+        assert!(res.is_err());
+
+        let res = std::panic::catch_unwind(|| get_hand_type_three("XXXXX123"));
+        assert!(res.is_err());
+
+        let res = std::panic::catch_unwind(|| get_value_of_card(&'X'));
+        assert!(res.is_err());
+
+        let res = std::panic::catch_unwind(|| get_value_of_card_two(&'X'));
+        assert!(res.is_err());
+
+        let input = "33333 1
+        2233 3";
+        let input = ProblemInput::String(input);
+        let res = std::panic::catch_unwind(|| do_part_one(Input::new(input)));
+        assert!(res.is_err());
+
+        let input = "33333 1
+        234 3";
+        let input = ProblemInput::String(input);
+        let res = std::panic::catch_unwind(|| do_part_one(Input::new(input)));
+        assert!(res.is_err());
+
+        let input = "2345678 1
+        234 3";
+        let input = ProblemInput::String(input);
+        let res = std::panic::catch_unwind(|| do_part_one(Input::new(input)));
+        assert!(res.is_err());
+
+        let input = "33333 1
+        2233 3";
+        let input = ProblemInput::String(input);
+        let res = std::panic::catch_unwind(|| sort_hands_two("23456", "23456"));
+        assert!(res.is_err());
+
+        let res = std::panic::catch_unwind(|| get_hand_type_three("KKQQ"));
+        assert!(res.is_err());
+
+        let res = std::panic::catch_unwind(|| get_hand_type_three("5KQ"));
+        assert!(res.is_err());
+
+        let res = std::panic::catch_unwind(|| get_hand_type_three("23675KQ"));
+        assert!(res.is_err());
+
+        let res = std::panic::catch_unwind(|| get_hand_type("23675KQ"));
+        assert!(res.is_err());
+    }
+    #[test]
     fn test_part_one_multi_line() {
         let input = "32T3K 765
         T55J5 684
@@ -323,6 +369,15 @@ mod tests {
         let result = do_part_one(Input::new(input));
         println!("Result: {}", result);
         assert_eq!(result, 6440);
+
+        let input = "33333 1
+        22223 2
+        22233 3";
+        let input = ProblemInput::String(input);
+        let result = do_part_one(Input::new(input));
+        println!("Result: {}", result);
+        assert_eq!(result, 10);
+        assert_eq!(Ordering::Less, sort_hands("KQ234", "KQ236"));
     }
 
     #[test]
@@ -336,6 +391,36 @@ mod tests {
         let result = do_part_two(Input::new(input));
         println!("Result: {}", result);
         assert_eq!(result, 5905);
+
+        let input = "JJJJJ";
+        assert_eq!(get_hand_type_two(input), 0);
+
+        let input = "KKKKJ";
+        assert_eq!(get_hand_type_two(input), 0);
+
+        let input = "JJJJJ";
+        assert_eq!(get_hand_type_two(input), 0);
+
+        let input = "KKKKJ";
+        assert_eq!(get_hand_type_two(input), 0);
+
+        let input = "QQQQQ";
+        assert_eq!(get_hand_type_three(input), 0);
+
+        let input = "JJJJJ";
+        assert_eq!(get_hand_type_three(input), 0);
+
+        let input = "KKKKQ";
+        assert_eq!(get_hand_type_three(input), 1);
+
+        let input = "KKKQQ";
+        assert_eq!(get_hand_type_three(input), 2);
+
+        let input = "KKKKJ";
+        assert_eq!(get_hand_type_three(input), 1);
+
+        let input = "KKKQ8";
+        assert_eq!(get_hand_type_three(input), 3);
     }
 
     #[test]

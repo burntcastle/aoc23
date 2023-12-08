@@ -154,8 +154,22 @@ fn do_part_two(input: Input) -> i64 {
 mod tests {
     use super::*;
     use crate::utils::ProblemInput;
+    #[test]
+    #[should_panic]
     fn test_part_one_panic() {
-        let input = "RXL
+        let input = "RL
+
+        AAA = (BBB, CCC)
+        AAA = (BBB, CCC)";
+        let input = ProblemInput::String(input);
+        let result = do_part_one(Input::new(input));
+        println!("Result: {}", result);
+        assert_eq!(result, 2);
+    }
+    #[test]
+    #[should_panic]
+    fn test_part_one_panic_two() {
+        let input = "XL
 
         AAA = (BBB, CCC)";
         let input = ProblemInput::String(input);
@@ -208,5 +222,17 @@ mod tests {
         let result = do_part_two(Input::new(input));
         println!("Result: {}", result);
         assert_eq!(result, 6);
+    }
+    #[test]
+    #[should_panic]
+    fn test_part_two_panic() {
+        let input = "RL
+
+        AAA = (BBB, CCC)
+        AAA = (BBB, CCC)";
+        let input = ProblemInput::String(input);
+        let result = do_part_two(Input::new(input));
+        println!("Result: {}", result);
+        assert_eq!(result, 2);
     }
 }

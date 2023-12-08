@@ -46,35 +46,34 @@ impl Input<'_> {
     }
 }
 
-
 #[cfg(test)]
-mod tests{
+mod tests {
 
     use super::*;
 
     #[test]
-    fn test_input_file(){
+    fn test_input_file() {
         let input = ProblemInput::File("./inputs/test");
         let input = Input::new(input);
         let mut lines = input.get_data().lines();
         let line = lines.next().unwrap().unwrap();
-        assert_eq!(line,"test");
+        assert_eq!(line, "test");
     }
     #[test]
-    fn test_input_string(){
+    fn test_input_string() {
         let input = ProblemInput::String("1721");
         let input = Input::new(input);
         let mut lines = input.get_data().lines();
         let line = lines.next().unwrap().unwrap();
-        assert_eq!(line,"1721");
+        assert_eq!(line, "1721");
     }
     #[test]
     #[should_panic]
-    fn test_panic(){
+    fn test_panic() {
         let input = ProblemInput::File("./inputs/no_file");
         let input = Input::new(input);
         let mut lines = input.get_data().lines();
         let line = lines.next().unwrap().unwrap();
-        assert_eq!(line,"test");
+        assert_eq!(line, "test");
     }
 }

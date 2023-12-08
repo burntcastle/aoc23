@@ -104,7 +104,7 @@ pub fn do_part_two(input: Input) -> (i64, std::time::Duration) {
             }
         }
         let line: String = char_vec.iter().collect();
-        for (i,num) in reverse_numbers.iter().enumerate() {
+        for (i, num) in reverse_numbers.iter().enumerate() {
             let num = num.as_str();
 
             if let Some(x) = line.find(num) {

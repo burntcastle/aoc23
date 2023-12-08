@@ -1,5 +1,5 @@
 use crate::utils::{Input, ProblemInput};
-use std::{ io::BufRead, time::Instant};
+use std::{io::BufRead, time::Instant};
 
 #[cfg(not(tarpaulin_include))]
 pub fn the_day() -> u32 {
@@ -8,7 +8,7 @@ pub fn the_day() -> u32 {
 #[cfg(not(tarpaulin_include))]
 pub fn part_one() -> (i64, std::time::Duration) {
     let now = Instant::now();
-    let path = format!("./inputs/{}",the_day());
+    let path = format!("./inputs/{}", the_day());
     let input = ProblemInput::File(path.as_str());
     let input = Input::new(input);
     (do_part_one(input), now.elapsed())
@@ -17,7 +17,7 @@ pub fn part_one() -> (i64, std::time::Duration) {
 #[cfg(not(tarpaulin_include))]
 pub fn part_two() -> (i64, std::time::Duration) {
     let now = Instant::now();
-    let path = format!("./inputs/{}",the_day());
+    let path = format!("./inputs/{}", the_day());
     let input = ProblemInput::File(path.as_str());
     let input = Input::new(input);
     (do_part_two(input), now.elapsed())
@@ -28,29 +28,32 @@ pub fn do_part_one(input: Input) -> i64 {
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
     let mut total = 0;
-    for line in lines{
-        total+= get_card_score(line);
+    for line in lines {
+        total += get_card_score(line);
     }
-total as i64
+    total as i64
 }
 
-fn get_card_score(card:&str) -> u32 {
-    let splits = card.split(|c: char| c == ':' || c=='|');
+fn get_card_score(card: &str) -> u32 {
+    let splits = card.split(|c: char| c == ':' || c == '|');
     let splits = splits.collect::<Vec<&str>>();
     let left = splits[1].trim();
     let right = splits[2].trim();
-    let left = left.replace("  "," 0");
-    let right = right.replace("  "," 0");
+    let left = left.replace("  ", " 0");
+    let right = right.replace("  ", " 0");
     let left: Vec<u32> = left.split(' ').map(|x| x.parse::<u32>().unwrap()).collect();
-    let right: Vec<u32> = right.split(' ').map(|x| x.parse::<u32>().unwrap()).collect();
-    get_overlap_score(left,right)
+    let right: Vec<u32> = right
+        .split(' ')
+        .map(|x| x.parse::<u32>().unwrap())
+        .collect();
+    get_overlap_score(left, right)
 }
 
-fn get_overlap_score(left: Vec<u32>, right: Vec<u32>) -> u32{
+fn get_overlap_score(left: Vec<u32>, right: Vec<u32>) -> u32 {
     let mut overlap = 0;
-    for item in left{
-        if right.contains(&item){
-            match overlap{
+    for item in left {
+        if right.contains(&item) {
+            match overlap {
                 0 => overlap = 1,
                 _ => overlap *= 2,
             }
@@ -59,22 +62,25 @@ fn get_overlap_score(left: Vec<u32>, right: Vec<u32>) -> u32{
     overlap
 }
 
-fn get_card_count(card:&str) -> u32 {
-    let splits = card.split(|c: char| c == ':' || c=='|');
+fn get_card_count(card: &str) -> u32 {
+    let splits = card.split(|c: char| c == ':' || c == '|');
     let splits = splits.collect::<Vec<&str>>();
     let left = splits[1].trim();
     let right = splits[2].trim();
-    let left = left.replace("  "," 0");
-    let right = right.replace("  "," 0");
+    let left = left.replace("  ", " 0");
+    let right = right.replace("  ", " 0");
     let left: Vec<u32> = left.split(' ').map(|x| x.parse::<u32>().unwrap()).collect();
-    let right: Vec<u32> = right.split(' ').map(|x| x.parse::<u32>().unwrap()).collect();
-    get_overlap_count(left,right)
+    let right: Vec<u32> = right
+        .split(' ')
+        .map(|x| x.parse::<u32>().unwrap())
+        .collect();
+    get_overlap_count(left, right)
 }
 
-fn get_overlap_count(left: Vec<u32>, right: Vec<u32>) -> u32{
+fn get_overlap_count(left: Vec<u32>, right: Vec<u32>) -> u32 {
     let mut overlap = 0;
-    for item in left{
-        if right.contains(&item){
+    for item in left {
+        if right.contains(&item) {
             overlap += 1
         }
     }
@@ -86,25 +92,25 @@ fn do_part_two(input: Input) -> i64 {
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
     let mut cards: Vec<&str> = lines.clone();
-    for (i,_line) in lines.iter().enumerate(){
-        cards.extend(get_winning_cards(lines.clone(), i,0));
+    for (i, _line) in lines.iter().enumerate() {
+        cards.extend(get_winning_cards(lines.clone(), i, 0));
     }
-//     for line in cards{
-//         total+= get_card_score(line);
-//     }
+    //     for line in cards{
+    //         total+= get_card_score(line);
+    //     }
     cards.len() as i64
 }
 
-fn get_winning_cards(cards: Vec<&str>, current: usize, step:usize) -> Vec<&str>{
+fn get_winning_cards(cards: Vec<&str>, current: usize, step: usize) -> Vec<&str> {
     let step = step + 1;
     // helpful for debugging
     // let indent =  "-".repeat(step);
     // println!("{}{}",indent, current+1);
-    let mut results: Vec<&str> = vec!();
+    let mut results: Vec<&str> = vec![];
     let score = get_card_count(cards[current]) as usize;
-    for i in (current+1)..(current+score+1){
+    for i in (current + 1)..(current + score + 1) {
         results.push(cards[i]);
-        for sub_result in get_winning_cards(cards.clone(),i, step){
+        for sub_result in get_winning_cards(cards.clone(), i, step) {
             results.push(sub_result);
         }
     }

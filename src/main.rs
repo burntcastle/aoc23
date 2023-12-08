@@ -18,50 +18,31 @@ fn main() {
             0 => {
                 println!("Exiting...");
                 exit(1);
-
             }
-            1 => {              
-                (Some(days::one::part_one()),Some(days::one::part_two()))
-            }
-            2 => {
-                (Some(days::two::part_one()),Some(days::two::part_two()))
-            }
-            3 =>{
-                (Some(days::three::part_one()),Some(days::three::part_two()))
-            }
-            4 =>{
-                (Some(days::four::part_one()),Some(days::four::part_two()))
-            }
-            5 =>{
-                (Some(days::five::part_one()),Some(days::five::part_two()))
-            }
-            6 =>{
-                //(Some(days::six::part_one()),None)
-                (Some(days::six::part_one()),Some(days::six::part_two()))
-            }
-            7 =>{
-                //7(Some(days::seven::part_one()),None)
-                (Some(days::seven::part_one()),Some(days::seven::part_two()))
-            }
-            8 =>{
-                (Some(days::eight::part_one()),Some(days::eight::part_two()))
+            1 => (Some(days::one::part_one()), Some(days::one::part_two())),
+            2 => (Some(days::two::part_one()), Some(days::two::part_two())),
+            3 => (Some(days::three::part_one()), Some(days::three::part_two())),
+            4 => (Some(days::four::part_one()), Some(days::four::part_two())),
+            5 => (Some(days::five::part_one()), Some(days::five::part_two())),
+            6 => (Some(days::six::part_one()), Some(days::six::part_two())),
+            7 => (Some(days::seven::part_one()), Some(days::seven::part_two())),
+            8 => {
+                (Some(days::eight::part_one()), Some(days::eight::part_two()))
                 //
             }
-            _ => {
-                (None,None)
-            }
+            _ => (None, None),
         };
         println!();
         match scores {
-            (Some((r1,e1)),Some((r2,e2))) => {
+            (Some((r1, e1)), Some((r2, e2))) => {
                 println!("Part One: {} ({:.2?})", r1, e1);
                 println!("Part Two: {} ({:.2?})", r2, e2);
             }
-            (Some((r1,e1)),None) => {
+            (Some((r1, e1)), None) => {
                 println!("Part One: {} ({:.2?})", r1, e1);
                 println!("Part Two Unimplemented");
-            }            
-            (None,Some((r2,e2))) => {
+            }
+            (None, Some((r2, e2))) => {
                 println!("Part One Unimplemented");
                 println!("Part Two: {} ({:.2?})", r2, e2);
             }
@@ -69,7 +50,6 @@ fn main() {
                 println!("Invalid Day")
             }
         };
-
         println!();
     }
 }
