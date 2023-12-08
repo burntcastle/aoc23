@@ -29,33 +29,12 @@ pub fn part_two() -> (i64, std::time::Duration) {
     (do_part_two(input), now.elapsed())
 }
 
-// fn parse_range(input: &str) -> IResult<&str,  RangeInclusive<u32>>{
-//     let (input, start) = nom::character::complete::u32(input)?;
-//     let (input, _) = nom::bytes::complete::tag("-")(input)?;
-//     let (input, end) = nom::character::complete::u32(input)?;
-
-//     Ok((input, start..=end))
-// }
-
-// fn parse_line(input: &str) -> IResult<&str, (RangeInclusive<u32>, RangeInclusive<u32>)>{
-
-//     let (input,(start,end)) = nom::sequence::separated_pair(parse_range, nom::bytes::complete::tag(","), parse_range)(input)?;
-//     Ok((input, (start,end)))
-// }
-
-// fn do_sections(input: &str) ->  IResult<&str, Vec<(RangeInclusive<u32>, RangeInclusive<u32>)>>{
-
-//     let (_, ranges) = nom::multi::separated_list1(nom::character::complete::line_ending, parse_line)(input)?;
-//     Ok(("", ranges))
-// }
-
 fn decode(input: &str) -> IResult<&str, (&str, &str, &str)> {
     let (input, key) = nom::bytes::complete::take_while(|c| c != ' ')(input)?;
     let (input, _) = nom::bytes::complete::tag(" = (")(input)?;
     let (input, left) = nom::bytes::complete::take_until(", ")(input)?;
     let (input, _) = nom::bytes::complete::tag(", ")(input)?;
     let (input, right) = nom::bytes::complete::take_until(")")(input)?;
-
     Ok((input, (key, left, right)))
 }
 
@@ -87,12 +66,9 @@ pub fn do_part_one(input: Input) -> i64 {
         let (left, right) = instructions.get(next).unwrap();
         next = get_next(direction, left, right);
         if next == "ZZZ" {
-            finished = false;
-            if i > 35000 {
-                finished = true;
-            }
+            finished = true;
         }
-        i +=1;
+        i += 1;
     }
     i
 }
@@ -144,7 +120,7 @@ fn do_part_two(input: Input) -> i64 {
             let progress_along_directions = i % directions.len();
 
             let direction = directions.get(progress_along_directions).unwrap();
-            
+
             let (l, r) = instructions.get(&next_item).unwrap();
             next_item = get_next(direction, l, r);
 
@@ -159,47 +135,34 @@ fn do_part_two(input: Input) -> i64 {
             {
                 repeats.insert(start, i - found_it);
                 finished = true;
-            } 
+            }
             i += 1;
         }
     }
 
     let mut total = *first.values().next().unwrap();
     for &val in first.values().skip(1) {
-        total = num::integer::lcm(total,val);
+        total = num::integer::lcm(total, val);
         //total = lcm(total, val);
     }
 
     total as i64
 }
 
-// fn lcm(n1: usize, n2: usize) -> usize {
-//     let mut x; // = 0;
-//     let mut y; //= 0;
-//     if n1 > n2 {
-//         x = n1;
-//         y = n2;
-//     } else {
-//         x = n2;
-//         y = n1;
-//     }
-
-//     let mut rem = x % y;
-
-//     while rem != 0 {
-//         x = y;
-//         y = rem;
-//         rem = x % y;
-//     }
-//     n1 * n2 / y
-// }
-
 #[cfg(test)]
 #[allow(unused)]
 mod tests {
     use super::*;
     use crate::utils::ProblemInput;
+    fn test_part_one_panic() {
+        let input = "RXL
 
+        AAA = (BBB, CCC)";
+        let input = ProblemInput::String(input);
+        let result = do_part_one(Input::new(input));
+        println!("Result: {}", result);
+        assert_eq!(result, 2);
+    }
     #[test]
     fn test_part_one_simple() {
         let input = "RL

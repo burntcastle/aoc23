@@ -1,9 +1,13 @@
 #![allow(unused)]
 use crate::utils::{Input, ProblemInput};
-use std::{io::BufRead, time::Instant, vec, ops::{Range, ControlFlow}};
 use kdam::tqdm;
 use rayon::prelude::*;
-
+use std::{
+    io::BufRead,
+    ops::{ControlFlow, Range},
+    time::Instant,
+    vec,
+};
 
 #[cfg(not(tarpaulin_include))]
 pub fn the_day() -> u32 {
@@ -21,7 +25,6 @@ pub fn part_one() -> (i64, std::time::Duration) {
 
 #[cfg(not(tarpaulin_include))]
 pub fn part_two() -> (i64, std::time::Duration) {
-
     let now = Instant::now();
     let path = format!("./inputs/{}", the_day());
     let input = ProblemInput::File(path.as_str());
@@ -40,43 +43,48 @@ pub fn do_part_one(input: Input) -> i64 {
         .iter()
         .map(|x| x.parse::<i64>().unwrap())
         .collect::<Vec<i64>>();
-           
-        let mut rows: Vec<Vec<(i64, i64, i64)>> = vec![];
-        let mut row: Vec<(i64, i64, i64)> = vec![];
-        for (i, line) in lines.iter().enumerate() {
-            let mut conversions: Vec<(i64, i64, i64)> = vec![];
-            // skip line 1
-            if i < 2 || line.trim().contains("-to-"){
-                continue;
-            } else if line.trim().is_empty() {
-                rows.push(row);
-                row = vec![];
-                continue;
-            }else{
-                let conversion = line.trim().split(' ').collect::<Vec<&str>>();
-                let conversion = conversion
-                    .iter()
-                    .map(|x| x.trim().parse::<i64>().unwrap())
-                    .collect::<Vec<i64>>();
-                let dest = conversion[0];
-                let source = conversion[1];
-                let len = conversion[2];
-                let item = (dest, source, len);
-                row.push(item);
-            }
-        }
-    
-        for row in rows.iter(){
-            seeds.par_iter_mut().for_each(|seed|{
-                let result = row.iter().filter(|(d,s,l)|*seed >= *s && *seed< (*s+*l)).collect::<Vec<&(i64,i64,i64)>>().first().copied();
-                if let Some((d,s,l)) = result{
-                    *seed += (d-s);
-                }
-            })
-        }
 
-        //println!("FINAL:{:?}", seeds);
-        *seeds.iter().min().unwrap()  
+    let mut rows: Vec<Vec<(i64, i64, i64)>> = vec![];
+    let mut row: Vec<(i64, i64, i64)> = vec![];
+    for (i, line) in lines.iter().enumerate() {
+        let mut conversions: Vec<(i64, i64, i64)> = vec![];
+        // skip line 1
+        if i < 2 || line.trim().contains("-to-") {
+            continue;
+        } else if line.trim().is_empty() {
+            rows.push(row);
+            row = vec![];
+            continue;
+        } else {
+            let conversion = line.trim().split(' ').collect::<Vec<&str>>();
+            let conversion = conversion
+                .iter()
+                .map(|x| x.trim().parse::<i64>().unwrap())
+                .collect::<Vec<i64>>();
+            let dest = conversion[0];
+            let source = conversion[1];
+            let len = conversion[2];
+            let item = (dest, source, len);
+            row.push(item);
+        }
+    }
+
+    for row in rows.iter() {
+        seeds.par_iter_mut().for_each(|seed| {
+            let result = row
+                .iter()
+                .filter(|(d, s, l)| *seed >= *s && *seed < (*s + *l))
+                .collect::<Vec<&(i64, i64, i64)>>()
+                .first()
+                .copied();
+            if let Some((d, s, l)) = result {
+                *seed += (d - s);
+            }
+        })
+    }
+
+    //println!("FINAL:{:?}", seeds);
+    *seeds.iter().min().unwrap()
 }
 
 fn do_part_two(input: Input) -> i64 {
@@ -91,25 +99,27 @@ fn do_part_two(input: Input) -> i64 {
         .map(|x| x.parse::<i64>().unwrap())
         .collect::<Vec<i64>>();
     let mut complete_seeds: Vec<i64> = vec![];
-    
-    for (i, seed) in tqdm!(seeds.iter().enumerate(), desc="Calculating complete seeds", position=0) {
-        if i %2 == 1{
-            complete_seeds.extend((seeds[i-1]..(seeds[i-1]+*seed)).collect::<Vec<i64>>());
+
+    //for (i, seed) in tqdm!(seeds.iter().enumerate(), desc="Calculating complete seeds", position=0) {
+    for (i, seed) in seeds.iter().enumerate() {
+        if i % 2 == 1 {
+            complete_seeds.extend((seeds[i - 1]..(seeds[i - 1] + *seed)).collect::<Vec<i64>>());
         }
     }
     let mut seeds = complete_seeds;
     let mut rows: Vec<Vec<(i64, i64, i64)>> = vec![];
     let mut row: Vec<(i64, i64, i64)> = vec![];
-    for (i, line) in tqdm!(lines.iter().enumerate(), desc="Parsing lines", position=1) {
+    //for (i, line) in tqdm!(lines.iter().enumerate(), desc = "Parsing lines", position = 1)
+    for (i, line) in lines.iter().enumerate() {
         let mut conversions: Vec<(i64, i64, i64)> = vec![];
         // skip line 1
-        if i < 2 || line.trim().contains("-to-"){
+        if i < 2 || line.trim().contains("-to-") {
             continue;
         } else if line.trim().is_empty() {
             rows.push(row);
             row = vec![];
             continue;
-        }else{
+        } else {
             let conversion = line.trim().split(' ').collect::<Vec<&str>>();
             let conversion = conversion
                 .iter()
@@ -123,20 +133,23 @@ fn do_part_two(input: Input) -> i64 {
         }
     }
 
-    for row in tqdm!(rows.iter(), desc="Calculating locations", position=2){
-        seeds.par_iter_mut().for_each(|seed|{
-            let result = row.iter().filter(|(d,s,l)|*seed >= *s && *seed< (*s+*l)).collect::<Vec<&(i64,i64,i64)>>().first().copied();
-            if let Some((d,s,l)) = result{
-                *seed += (d-s);
+    //for row in tqdm!(rows.iter(), desc = "Calculating locations", position = 2)
+    for row in rows.iter() {
+        seeds.par_iter_mut().for_each(|seed| {
+            let result = row
+                .iter()
+                .filter(|(d, s, l)| *seed >= *s && *seed < (*s + *l))
+                .collect::<Vec<&(i64, i64, i64)>>()
+                .first()
+                .copied();
+            if let Some((d, s, l)) = result {
+                *seed += (d - s);
             }
         })
     }
 
-
-    
     //println!("FINAL:{:?}", seeds);
-    *seeds.iter().min().unwrap() 
-    
+    *seeds.iter().min().unwrap()
 }
 
 #[cfg(test)]
