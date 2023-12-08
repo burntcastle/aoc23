@@ -1,5 +1,6 @@
 use crate::utils::{Input, ProblemInput};
 use core::panic;
+use kdam::tqdm;
 use nom::*;
 use nom::{self, branch, sequence::delimited, IResult};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
@@ -96,7 +97,11 @@ pub fn do_part_one(input: Input) -> i64 {
         next = get_next(direction, left, right);
         //println!("Direction: {}, Next: {}", direction, next );
         if next == "ZZZ" {
-            finished = true;
+            finished = false;
+            if  i > 35000{
+                finished = true;
+            }
+            println!("repeated at: {}, index: {}", i+1, index)
         }
         i = i + 1
     }
@@ -131,7 +136,6 @@ fn do_part_two(input: Input) -> i64 {
         }
     }
 
-
     let mut next: Vec<&str> = instructions
         .keys()
         .filter(|&x| x.ends_with('A'))
@@ -155,59 +159,74 @@ fn do_part_two(input: Input) -> i64 {
     // }
     let mut first: HashMap<&str, usize> = HashMap::new();
     let mut repeats: HashMap<&str, usize> = HashMap::new();
-    next.iter().for_each(|start|{
+    println!("Start: {:?}", next);
+    println!("Directions: {:?}", directions.len());
+    for start in next {
         let mut finished = false;
-        let mut next_item = *start;
+        let mut next_item = start;
         println!("Start: {:?}", next_item);
         let mut found_first = false;
         let mut found_index = 0;
+        let mut found_it = 0;
         let mut i: i64 = 0;
         while !finished {
-
             //println!("Next: {:?}", next);
             let index = i as usize % (directions.len());
             let direction = directions.get(index).unwrap();
 
             let mut next_locations: Vec<&str> = vec![];
-            
-            let (l, r) = instructions.get(next_item).unwrap();
+
+            let (l, r) = instructions.get(&next_item).unwrap();
             next_item = (get_next(direction, l, r));
+
             
-            i = i + 1;
-            if(next_item.ends_with('Z') && !found_first){
+            if (next_item.ends_with('Z') && !found_first) {
                 found_first = true;
-                found_index = index;
-                println!("Start: {}, ended at: {}, after: {}", start, next_item, i);
-                first.insert(start, i as usize);
-            }else if next_item.ends_with('Z') && index == found_index as usize{
-                println!("Start: {}, repeated_after: {}", start,  i - found_index as i64);
-                repeats.insert(start, i as usize);
+                found_index = index + 1;
+                found_it = i;
+                println!("Start: {}, ended at: {}, after: {} [{}]", start, next_item, found_it,found_index);
+                first.insert(start, found_it as usize);
+
+            } else if next_item.ends_with('Z') && index+1 == found_index as usize {
+                println!(
+                    "Start: {}, repeated_after: {} - seen at {}",
+                    start,
+                    i-found_it,
+                    i+1
+                );
+                repeats.insert(start, (i-found_it) as usize);
                 finished = true;
             }
-            //i = i + 1
+            i = i + 1
         }
-    }); 
-    println!("Firsts: {}",first.values().sum::<usize>());
-    println!("Seconds: {}",repeats.values().sum::<usize>());
-    
-    for i in RangeInclusive::new(10, 1000000){
-
-        //let mut results: Option<usize> = None;
-        for (j,f) in first.values().enumerate(){
-            let s  = repeats.values().nth(j).unwrap();
-            if f > &i{
-                break;
-            }
-            let mut z  =i-f;
-            if z % s != 0{
-                break;
-            }
-            z = z/s;
-            }
-            println!("Got to end with i:{}", i);
-            return i as i64;
     }
     
+    println!("Firsts: {}", first.values().sum::<usize>());
+    println!("Seconds: {}", repeats.values().sum::<usize>());
+
+    for i in tqdm!(RangeInclusive::new(10, usize::MAX)) {
+        let mut finish = false;
+        //let mut results: Option<usize> = None;
+        for (j, f) in first.values().enumerate() {
+            finish = false;
+            let s = repeats.values().nth(j).unwrap();
+            if f > &i {
+                break;
+            }
+            let mut z = i - f;
+            if z % s != 0 {
+                break;
+            }
+            z = z / s;
+            finish = true
+        }
+        if finish {
+            println!("Got to end with i:{}", i);
+            return i as i64;
+        }
+    }
+    println!("Got to end with no result");
+
     0
 }
 
