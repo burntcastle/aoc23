@@ -1,14 +1,10 @@
 use crate::utils::{Input, ProblemInput};
 use core::panic;
-use kdam::tqdm;
-use nom::*;
-use nom::{self, branch, sequence::delimited, IResult};
-use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
-use rayon::string;
-use regex_macro::regex;
+
+use nom::{self, IResult};
+
 use std::collections::HashMap;
-use std::ops::RangeInclusive;
-use std::{io::BufRead, ops::Range, time::Instant};
+use std::{io::BufRead, time::Instant};
 
 #[cfg(not(tarpaulin_include))]
 pub fn the_day() -> u32 {
@@ -70,17 +66,15 @@ pub fn do_part_one(input: Input) -> i64 {
 
     let directions = lines.first().unwrap().chars().collect::<Vec<char>>();
     let mut instructions: HashMap<&str, (&str, &str)> = HashMap::new();
-    for (i, line) in lines.iter().skip(1).enumerate() {
+    for line in lines.iter().skip(1) {
         if line.is_empty() {
             continue;
         }
 
         let (_, (key, left, right)) = decode(line.trim()).unwrap();
-        match instructions.insert(key, (left, right)) {
-            Some(x) => {
-                panic!("Duplicate key found: {}", key);
-            }
-            None => {}
+
+        if instructions.insert(key, (left, right)).is_some() {
+            panic!("Duplicate key found: {}", key)
         }
     }
 
@@ -90,20 +84,15 @@ pub fn do_part_one(input: Input) -> i64 {
     while !finished {
         let index = i as usize % (directions.len());
         let direction = directions.get(index).unwrap();
-
-        //println!("Direction: {}, Next: {}", direction, next );
-
         let (left, right) = instructions.get(next).unwrap();
         next = get_next(direction, left, right);
-        //println!("Direction: {}, Next: {}", direction, next );
         if next == "ZZZ" {
             finished = false;
-            if  i > 35000{
+            if i > 35000 {
                 finished = true;
             }
-            println!("repeated at: {}, index: {}", i+1, index)
         }
-        i = i + 1
+        i +=1;
     }
     i
 }
@@ -123,132 +112,88 @@ fn do_part_two(input: Input) -> i64 {
 
     let directions = lines.first().unwrap().chars().collect::<Vec<char>>();
     let mut instructions: HashMap<&str, (&str, &str)> = HashMap::new();
-    for (i, line) in lines.iter().skip(1).enumerate() {
+    for line in lines.iter().skip(1) {
         if line.is_empty() {
             continue;
         }
         let (_, (key, left, right)) = decode(line.trim()).unwrap();
-        match instructions.insert(key, (left, right)) {
-            Some(x) => {
-                panic!("Duplicate key found: {}", key);
-            }
-            None => {}
+
+        if instructions.insert(key, (left, right)).is_some() {
+            panic!("Duplicate key found: {}", key)
         }
     }
 
-    let mut next: Vec<&str> = instructions
+    let next: Vec<&str> = instructions
         .keys()
         .filter(|&x| x.ends_with('A'))
-        .map(|x| *x)
+        .copied()
         .collect::<Vec<&str>>();
 
-    // println!("Start: {:?}", next);
-    // while !finished {
-    //     //println!("Next: {:?}", next);
-    //     let index = i as usize % (directions.len());
-    //     let direction = directions.get(index).unwrap();
-
-    //     let mut next_locations: Vec<&str> = vec![];
-    //     for n in next{
-    //         let (l,r) = instructions.get(n).unwrap();
-    //         next_locations.push(get_next(direction, l, r))
-    //     }
-    //     next = next_locations.clone();
-    //     finished = is_finished(next.clone());
-    //     i = i + 1
-    // }
     let mut first: HashMap<&str, usize> = HashMap::new();
     let mut repeats: HashMap<&str, usize> = HashMap::new();
-    println!("Start: {:?}", next);
-    println!("Directions: {:?}", directions.len());
+
     for start in next {
         let mut finished = false;
         let mut next_item = start;
-        println!("Start: {:?}", next_item);
         let mut found_first = false;
-        let mut found_index = 0;
+        let mut found_progress_along_directions = 0;
         let mut found_it = 0;
-        let mut i: i64 = 0;
+        let mut i: usize = 0;
         while !finished {
-            //println!("Next: {:?}", next);
-            let index = i as usize % (directions.len());
-            let direction = directions.get(index).unwrap();
+            // how far along
+            let progress_along_directions = i % directions.len();
 
-            let mut next_locations: Vec<&str> = vec![];
-
-            let (l, r) = instructions.get(&next_item).unwrap();
-            next_item = (get_next(direction, l, r));
-
+            let direction = directions.get(progress_along_directions).unwrap();
             
-            if (next_item.ends_with('Z') && !found_first) {
+            let (l, r) = instructions.get(&next_item).unwrap();
+            next_item = get_next(direction, l, r);
+
+            if next_item.ends_with('Z') && !found_first {
+                first.insert(start, i + 1);
                 found_first = true;
-                found_index = index + 1;
-                found_it = i;
-                println!("Start: {}, ended at: {}, after: {} [{}]", start, next_item, found_it,found_index);
-                first.insert(start, found_it as usize);
-
-            } else if next_item.ends_with('Z') && index+1 == found_index as usize {
-                println!(
-                    "Start: {}, repeated_after: {} - seen at {}",
-                    start,
-                    i-found_it,
-                    i+1
-                );
-                repeats.insert(start, (i-found_it) as usize);
+                found_it = i + 1;
+                found_progress_along_directions = progress_along_directions + 1;
+            } else if next_item.ends_with('Z')
+                && found_first
+                && (progress_along_directions + 1) == found_progress_along_directions
+            {
+                repeats.insert(start, i - found_it);
                 finished = true;
-            }
-            i = i + 1
+            } 
+            i += 1;
         }
     }
-    
-    println!("Firsts: {}", first.values().sum::<usize>());
-    println!("Seconds: {}", repeats.values().sum::<usize>());
 
-    for i in tqdm!(RangeInclusive::new(10, usize::MAX)) {
-        let mut finish = false;
-        //let mut results: Option<usize> = None;
-        for (j, f) in first.values().enumerate() {
-            finish = false;
-            let s = repeats.values().nth(j).unwrap();
-            if f > &i {
-                break;
-            }
-            let mut z = i - f;
-            if z % s != 0 {
-                break;
-            }
-            z = z / s;
-            finish = true
-        }
-        if finish {
-            println!("Got to end with i:{}", i);
-            return i as i64;
-        }
+    let mut total = *first.values().next().unwrap();
+    for &val in first.values().skip(1) {
+        total = num::integer::lcm(total,val);
+        //total = lcm(total, val);
     }
-    println!("Got to end with no result");
 
-    0
+    total as i64
 }
 
-fn is_finished(next: Vec<&str>) -> bool {
-    for n in next {
-        if !n.ends_with('Z') {
-            return false;
-        }
-    }
-    true
-}
-fn get_next_part_two<'a>(direction: &'a char, locations: Vec<(&'a str, &'a str)>) -> Vec<&'a str> {
-    let mut next: Vec<&str> = vec![];
-    for (l, r) in locations {
-        match direction {
-            'L' => next.push(l),
-            'R' => next.push(r),
-            _ => panic!("Invalid direction: {}", direction),
-        }
-    }
-    next
-}
+// fn lcm(n1: usize, n2: usize) -> usize {
+//     let mut x; // = 0;
+//     let mut y; //= 0;
+//     if n1 > n2 {
+//         x = n1;
+//         y = n2;
+//     } else {
+//         x = n2;
+//         y = n1;
+//     }
+
+//     let mut rem = x % y;
+
+//     while rem != 0 {
+//         x = y;
+//         y = rem;
+//         rem = x % y;
+//     }
+//     n1 * n2 / y
+// }
+
 #[cfg(test)]
 #[allow(unused)]
 mod tests {
