@@ -2,6 +2,7 @@ use crate::utils::{Input, ProblemInput};
 use core::panic;
 use nom::*;
 use nom::{self, branch, sequence::delimited, IResult};
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use rayon::string;
 use regex_macro::regex;
 use std::collections::HashMap;
@@ -72,7 +73,7 @@ pub fn do_part_one(input: Input) -> i64 {
         if line.is_empty() {
             continue;
         }
-        
+
         let (_, (key, left, right)) = decode(line.trim()).unwrap();
         match instructions.insert(key, (left, right)) {
             Some(x) => {
@@ -88,9 +89,9 @@ pub fn do_part_one(input: Input) -> i64 {
     while !finished {
         let index = i as usize % (directions.len());
         let direction = directions.get(index).unwrap();
-        
+
         //println!("Direction: {}, Next: {}", direction, next );
-        
+
         let (left, right) = instructions.get(next).unwrap();
         next = get_next(direction, left, right);
         //println!("Direction: {}, Next: {}", direction, next );
@@ -130,39 +131,97 @@ fn do_part_two(input: Input) -> i64 {
         }
     }
 
-    let mut i: i64 = 0;
-    let mut finished = false;
-    let mut next: Vec<&str> = instructions.keys().filter(|&x| x.ends_with('A')).map(|x| *x).collect::<Vec<&str>>();
-    
-    println!("Start: {:?}", next);
-    while !finished {
-        //println!("Next: {:?}", next);
-        let index = i as usize % (directions.len());
-        let direction = directions.get(index).unwrap();
-        
-        let mut next_locations: Vec<&str> = vec![];
-        for n in next{
-            let (l,r) = instructions.get(n).unwrap();
-            next_locations.push(get_next(direction, l, r))
+
+    let mut next: Vec<&str> = instructions
+        .keys()
+        .filter(|&x| x.ends_with('A'))
+        .map(|x| *x)
+        .collect::<Vec<&str>>();
+
+    // println!("Start: {:?}", next);
+    // while !finished {
+    //     //println!("Next: {:?}", next);
+    //     let index = i as usize % (directions.len());
+    //     let direction = directions.get(index).unwrap();
+
+    //     let mut next_locations: Vec<&str> = vec![];
+    //     for n in next{
+    //         let (l,r) = instructions.get(n).unwrap();
+    //         next_locations.push(get_next(direction, l, r))
+    //     }
+    //     next = next_locations.clone();
+    //     finished = is_finished(next.clone());
+    //     i = i + 1
+    // }
+    let mut first: HashMap<&str, usize> = HashMap::new();
+    let mut repeats: HashMap<&str, usize> = HashMap::new();
+    next.iter().for_each(|start|{
+        let mut finished = false;
+        let mut next_item = *start;
+        println!("Start: {:?}", next_item);
+        let mut found_first = false;
+        let mut found_index = 0;
+        let mut i: i64 = 0;
+        while !finished {
+
+            //println!("Next: {:?}", next);
+            let index = i as usize % (directions.len());
+            let direction = directions.get(index).unwrap();
+
+            let mut next_locations: Vec<&str> = vec![];
+            
+            let (l, r) = instructions.get(next_item).unwrap();
+            next_item = (get_next(direction, l, r));
+            
+            i = i + 1;
+            if(next_item.ends_with('Z') && !found_first){
+                found_first = true;
+                found_index = index;
+                println!("Start: {}, ended at: {}, after: {}", start, next_item, i);
+                first.insert(start, i as usize);
+            }else if next_item.ends_with('Z') && index == found_index as usize{
+                println!("Start: {}, repeated_after: {}", start,  i - found_index as i64);
+                repeats.insert(start, i as usize);
+                finished = true;
+            }
+            //i = i + 1
         }
-        next = next_locations.clone();
-        finished = is_finished(next.clone());
-        i = i + 1
+    }); 
+    println!("Firsts: {}",first.values().sum::<usize>());
+    println!("Seconds: {}",repeats.values().sum::<usize>());
+    
+    for i in RangeInclusive::new(10, 1000000){
+
+        //let mut results: Option<usize> = None;
+        for (j,f) in first.values().enumerate(){
+            let s  = repeats.values().nth(j).unwrap();
+            if f > &i{
+                break;
+            }
+            let mut z  =i-f;
+            if z % s != 0{
+                break;
+            }
+            z = z/s;
+            }
+            println!("Got to end with i:{}", i);
+            return i as i64;
     }
-    i
+    
+    0
 }
 
-fn is_finished(next: Vec<&str>) -> bool{
-    for n in next{
-        if !n.ends_with('Z'){
+fn is_finished(next: Vec<&str>) -> bool {
+    for n in next {
+        if !n.ends_with('Z') {
             return false;
         }
     }
     true
 }
-fn get_next_part_two<'a>(direction: &'a char, locations: Vec<(&'a str,&'a str)>) ->Vec<&'a str> {
+fn get_next_part_two<'a>(direction: &'a char, locations: Vec<(&'a str, &'a str)>) -> Vec<&'a str> {
     let mut next: Vec<&str> = vec![];
-    for(l,r) in locations{ 
+    for (l, r) in locations {
         match direction {
             'L' => next.push(l),
             'R' => next.push(r),
@@ -223,5 +282,4 @@ mod tests {
         println!("Result: {}", result);
         assert_eq!(result, 6);
     }
- 
 }
