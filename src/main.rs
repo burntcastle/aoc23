@@ -26,10 +26,8 @@ fn main() {
             5 => (Some(days::five::part_one()), Some(days::five::part_two())),
             6 => (Some(days::six::part_one()), Some(days::six::part_two())),
             7 => (Some(days::seven::part_one()), Some(days::seven::part_two())),
-            8 => {
-                (Some(days::eight::part_one()), Some(days::eight::part_two()))
-                //
-            }
+            8 => (Some(days::eight::part_one()), Some(days::eight::part_two())),
+            9 => (Some(days::nine::part_one()), Some(days::nine::part_two())),
             _ => (None, None),
         };
         println!();

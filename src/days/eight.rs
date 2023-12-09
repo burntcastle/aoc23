@@ -156,7 +156,7 @@ mod tests {
     use crate::utils::ProblemInput;
     #[test]
     #[should_panic]
-    fn test_part_one_panic() {
+    fn one_panic() {
         let input = "RL
 
         AAA = (BBB, CCC)
@@ -168,7 +168,7 @@ mod tests {
     }
     #[test]
     #[should_panic]
-    fn test_part_one_panic_two() {
+    fn one_panic_two() {
         let input = "XL
 
         AAA = (BBB, CCC)";
@@ -178,7 +178,7 @@ mod tests {
         assert_eq!(result, 2);
     }
     #[test]
-    fn test_part_one_simple() {
+    fn one_simple() {
         let input = "RL
 
         AAA = (BBB, CCC)
@@ -194,7 +194,7 @@ mod tests {
         assert_eq!(result, 2);
     }
     #[test]
-    fn test_part_one_repeat() {
+    fn one_repeat() {
         let input = "LLR
 
         AAA = (BBB, BBB)
@@ -207,7 +207,7 @@ mod tests {
         assert_eq!(result, 6);
     }
     #[test]
-    fn test_part_two() {
+    fn two() {
         let input = "LR
 
         11A = (11B, XXX)
@@ -225,7 +225,7 @@ mod tests {
     }
     #[test]
     #[should_panic]
-    fn test_part_two_panic() {
+    fn two_panic() {
         let input = "RL
 
         AAA = (BBB, CCC)

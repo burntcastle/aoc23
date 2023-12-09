@@ -303,7 +303,7 @@ mod tests {
     use crate::utils::ProblemInput;
 
     #[test]
-    fn test_panics() {
+    fn all_panics() {
         let res = std::panic::catch_unwind(|| sort_hands("KK234", "KK234"));
         assert!(res.is_err());
 
@@ -358,7 +358,7 @@ mod tests {
         assert!(res.is_err());
     }
     #[test]
-    fn test_part_one_multi_line() {
+    fn one_multi_line() {
         let input = "32T3K 765
         T55J5 684
         KK677 28
@@ -381,7 +381,7 @@ mod tests {
     }
 
     #[test]
-    fn test_part_two_multi_line() {
+    fn two_multi_line() {
         let input = "32T3K 765
         T55J5 684
         KK677 28
@@ -424,7 +424,7 @@ mod tests {
     }
 
     #[test]
-    fn test_part_two_multi_line_two() {
+    fn two_multi_line_two() {
         let input = "JAAKK 1
         JJJAK 2";
         let input = ProblemInput::String(input);

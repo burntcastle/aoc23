@@ -100,7 +100,7 @@ mod tests {
     use crate::utils::ProblemInput;
 
     #[test]
-    fn test_part_one_multi_line() {
+    fn one_multi_line() {
         let input = "Time:      7  15   30
         Distance:  9  40  200";
 
@@ -111,7 +111,7 @@ mod tests {
     }
 
     #[test]
-    fn test_part_two_multi_line() {
+    fn two_multi_line() {
         let input = "Time:      7  15   30
         Distance:  9  40  200";
         let input = ProblemInput::String(input);

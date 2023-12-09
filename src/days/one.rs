@@ -125,7 +125,7 @@ mod tests {
 
     use super::*;
     #[test]
-    fn part_one_test_digits() {
+    fn one_test_digits() {
         let input = "asdk1asfd2sdsdf4aa
         asdk1asfd2sdsdf4aa";
         let input = ProblemInput::String(input);
@@ -134,7 +134,7 @@ mod tests {
     }
 
     #[test]
-    fn part_two_test_digits() {
+    fn two_test_digits() {
         let input = "asdk1asfd2sdsdf4aa
         asdk3asfd2sdsdf2aa";
         let input = ProblemInput::String(input);
@@ -142,7 +142,7 @@ mod tests {
         assert_eq!(result.0, 46);
     }
     #[test]
-    fn part_two_test_words() {
+    fn two_test_words() {
         let input = "athreesdk1asfd2sdsdf4sixzaa
         dfasfivelaksjdasthreeasdasoneasd";
         let input = ProblemInput::String(input);
@@ -150,7 +150,7 @@ mod tests {
         assert_eq!(result.0, 87);
     }
     #[test]
-    fn part_two_test_mixed() {
+    fn two_test_mixed() {
         let input = "asdninek1asfd2sdsdf4aa
         asdddzerosdfj4alsasfdl1lsdd";
         let input = ProblemInput::String(input);

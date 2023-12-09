@@ -143,12 +143,12 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn test_invalid_colour() {
+    fn invalid_colour() {
         let _colour = Colours::from_string("purple");
     }
 
     #[test]
-    fn test_part_one_single_line() {
+    fn one_single_line() {
         let bag = Bag {
             blue: 14,
             red: 12,
@@ -168,7 +168,7 @@ mod tests {
         assert_eq!(result, 1);
     }
     #[test]
-    fn test_part_one_multi_line() {
+    fn one_multi_line() {
         let bag = Bag {
             blue: 14,
             red: 12,
@@ -187,7 +187,7 @@ mod tests {
     }
 
     #[test]
-    fn test_part_two_single_line() {
+    fn two_single_line() {
         let input = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green";
         // esult = 6*4*2 = 48
         let input = ProblemInput::String(input);
@@ -196,7 +196,7 @@ mod tests {
         assert_eq!(result, 48);
     }
     #[test]
-    fn test_part_two_multi_line() {
+    fn two_multi_line() {
         let input = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
         Game 2: 9 blue, 4 red; 1 red, 2 green, 6 blue; 3 green";
         // result = 6*4*2 + 9*4*3 = 156

@@ -193,17 +193,17 @@ mod tests {
     use crate::utils::ProblemInput;
 
     #[test]
-    fn test_check_for_char() {
+    fn fn_check_for_char() {
         assert_eq!(check_for_char(None), false);
     }
 
     #[test]
-    fn test_check_row() {
+    fn fn_check_row() {
         assert_eq!(check_row(None, None, "123", 0, 3), false);
     }
 
     #[test]
-    fn test_part_one_single_line() {
+    fn one_single_line() {
         let input = "*........#
 467...114.
 .........";
@@ -213,7 +213,7 @@ mod tests {
         assert_eq!(result, 467 + 114);
     }
     #[test]
-    fn test_part_one_multi_line() {
+    fn one_multi_line() {
         let input = "467..114..
 ...*......
 ..35..633.
@@ -237,7 +237,7 @@ mod tests {
     }
 
     #[test]
-    fn test_part_two_multi_line() {
+    fn two_multi_line() {
         let input = "467..114..
 ...*......
 ..35..633.

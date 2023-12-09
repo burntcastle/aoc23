@@ -159,7 +159,7 @@ mod tests {
     use crate::utils::ProblemInput;
 
     #[test]
-    fn test_part_one_multi_line() {
+    fn one_multi_line() {
         let input = "seeds: 79 14 55 13
 
         seed-to-soil map:
@@ -201,7 +201,7 @@ mod tests {
     }
 
     #[test]
-    fn test_part_two_multi_line() {
+    fn two_multi_line() {
         let input = "seeds: 79 14 55 13
 
         seed-to-soil map:

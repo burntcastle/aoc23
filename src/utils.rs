@@ -52,7 +52,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_input_file() {
+    fn input_file() {
         let input = ProblemInput::File("./inputs/test");
         let input = Input::new(input);
         let mut lines = input.get_data().lines();
@@ -60,7 +60,7 @@ mod tests {
         assert_eq!(line, "test");
     }
     #[test]
-    fn test_input_string() {
+    fn input_string() {
         let input = ProblemInput::String("1721");
         let input = Input::new(input);
         let mut lines = input.get_data().lines();
@@ -69,7 +69,7 @@ mod tests {
     }
     #[test]
     #[should_panic]
-    fn test_panic() {
+    fn panic() {
         let input = ProblemInput::File("./inputs/no_file");
         let input = Input::new(input);
         let mut lines = input.get_data().lines();

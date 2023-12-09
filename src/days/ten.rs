@@ -3,7 +3,7 @@ use std::{ io::BufRead, time::Instant};
 
 #[cfg(not(tarpaulin_include))]
 pub fn the_day() -> u32 {
-    -1
+    10
 }
 
 #[cfg(not(tarpaulin_include))]
