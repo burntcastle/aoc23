@@ -29,7 +29,10 @@ fn main() {
             8 => (Some(days::eight::part_one()), Some(days::eight::part_two())),
             9 => (Some(days::nine::part_one()), Some(days::nine::part_two())),
             10 => (Some(days::ten::part_one()), Some(days::ten::part_two())),
-            11 => (Some(days::eleven::part_one()), Some(days::eleven::part_two())),
+            11 => (
+                Some(days::eleven::part_one()),
+                Some(days::eleven::part_two()),
+            ),
             _ => (None, None),
         };
         println!();

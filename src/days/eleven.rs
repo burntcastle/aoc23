@@ -41,7 +41,7 @@ pub fn do_part_one(input: Input) -> i64 {
                     row.push(i);
                     i += 1
                 }
-                x => println!("Invalid input: {}", x),
+                _x => (),
             }
         }
         data.push(row);
@@ -63,10 +63,9 @@ pub fn do_part_one(input: Input) -> i64 {
     }
     let mut final_data = new_data.clone();
     for (i, _) in new_data.iter().enumerate() {
-        let mut offset = 0;
-        for col in cols.clone() {
+        //offset increases the index by one so they are put in the correct place.
+        for (offset, col) in cols.clone().into_iter().enumerate() {
             final_data.get_mut(i).unwrap().insert(col + offset, 0);
-            offset += 1;
         }
     }
 
@@ -84,9 +83,8 @@ pub fn do_part_one(input: Input) -> i64 {
         for j in i..points.len() {
             let j = j + 1;
             let diff = start.0.abs_diff(points.get(&j).unwrap().0)
-            + start.1.abs_diff(points.get(&j).unwrap().1);
-            
-            println!("{}-{}:{}", i,j, diff);
+                + start.1.abs_diff(points.get(&j).unwrap().1);
+
             total_length += diff;
         }
     }
@@ -111,21 +109,15 @@ fn do_part_two(input: Input) -> i64 {
                     row.push(i);
                     i += 1
                 }
-                x => println!("Invalid input: {}", x),
+                _x => (),
             }
         }
         data.push(row);
     }
-    for row in data.clone() {
-       for col in row{
-        print!("{}", col   );
 
-       }
-       println!();
-    }
-    
+
     let length = &data[0].clone().len();
-    
+
     let mut rows: Vec<usize> = Vec::new();
     for (i, row) in data.iter().enumerate() {
         if row.iter().sum::<i64>() == 0 {
@@ -147,25 +139,29 @@ fn do_part_two(input: Input) -> i64 {
             }
         }
     }
-    println!("Rows: {:?}", rows);
-    println!("Cols: {:?}", cols);
-    println!("Length: {}", points.len());
+
     let mut total_length = 0;
     for i in 0..points.len() {
         let i = i + 1;
         let start = points.get(&i).unwrap();
         for j in i..points.len() {
-            let j = j +1;
-            let (x,y) = points.get(&j).unwrap();
+            let j = j + 1;
+            let (x, y) = points.get(&j).unwrap();
 
             let x_dif = start.0.abs_diff(*x);
             let y_dif = start.1.abs_diff(*y);
-
-            let x_m = rows.iter().filter(|&z|z> &start.0 && z < x).count();
-            let y_m = cols.iter().filter(|&z|z> &start.1 && z < y).count();
-            let additional = (y_m + x_m) *(2-1);
+            let mut y_range = y..&start.1;
+            if y > &start.1 {
+                y_range = &start.1..y;
+            }
+            let mut x_range = x..&start.0;
+            if x > &start.0 {
+                x_range = &start.0..x;
+            }
+            let x_m = rows.iter().filter(|z| x_range.contains(z)).count();
+            let y_m = cols.iter().filter(|z| y_range.contains(z)).count();
+            let additional = (y_m + x_m) * (1_000_000 - 1);
             total_length += x_dif + y_dif + additional;
-            println!("{}-{}:{}", i,j, x_dif + y_dif + additional);
         }
     }
     println!("Total Length: {}", total_length);
@@ -178,7 +174,7 @@ mod tests {
     use super::*;
     use crate::utils::ProblemInput;
 
-    const PART_ONE_ANSWER: i64 = 371;
+    const PART_ONE_ANSWER: i64 = 374;
     const PART_ONE_TEST: &str = "...#......
     .......#..
     #.........
@@ -190,7 +186,7 @@ mod tests {
     .......#..
     #...#.....";
 
-    const PART_TWO_ANSWER: i64 = 0;
+    const PART_TWO_ANSWER: i64 = 82000210;
     const PART_TWO_TEST: &str = "...#......
     .......#..
     #.........
@@ -235,6 +231,6 @@ mod tests {
         let input = ProblemInput::String(PART_TWO_TEST.trim());
         let result = do_part_two(Input::new(input));
         println!("Result: {}", result);
-        assert_eq!(result, 0);
+        assert_eq!(result, PART_TWO_ANSWER);
     }
 }
