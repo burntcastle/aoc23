@@ -34,7 +34,8 @@ fn main() {
                 Some(days::eleven::part_two()),
             ),
             12 => (
-                Some(days::twelve::part_one()),
+                //Some(days::twelve::part_one()),
+                None,
                 Some(days::twelve::part_two()),
             ),
             _ => (None, None),
