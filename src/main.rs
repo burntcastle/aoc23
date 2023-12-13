@@ -38,6 +38,11 @@ fn main() {
                 //None
                 Some(days::twelve::part_two()),
             ),
+            13 => (
+                Some(days::thirteen::part_one()),
+                //None
+                Some(days::thirteen::part_two()),
+            ),
             _ => (None, None),
         };
         println!();
