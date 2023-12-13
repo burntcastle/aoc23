@@ -1,5 +1,3 @@
-use rayon::range;
-
 use crate::utils::{Input, ProblemInput};
 use std::{io::BufRead, time::Instant};
 
