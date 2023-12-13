@@ -115,7 +115,6 @@ fn do_part_two(input: Input) -> i64 {
         data.push(row);
     }
 
-
     let length = &data[0].clone().len();
 
     let mut rows: Vec<usize> = Vec::new();
