@@ -35,13 +35,18 @@ fn main() {
             ),
             12 => (
                 Some(days::twelve::part_one()),
-                //None
+       
                 Some(days::twelve::part_two()),
             ),
             13 => (
                 Some(days::thirteen::part_one()),
-                //None
+          
                 Some(days::thirteen::part_two()),
+            ),
+            14 => (
+                Some(days::fourteen::part_one()),
+        
+                Some(days::fourteen::part_two()),
             ),
             _ => (None, None),
         };
