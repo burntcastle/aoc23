@@ -182,7 +182,6 @@ mod tests {
         assert!(res.is_err());
     }
 
-
     #[test]
     fn other_faster() {
         let input = ProblemInput::String(".??..??...??#. 2,2");

@@ -98,7 +98,7 @@ fn get_rows_and_cols(line_groups: &[&str]) -> (Vec<Vec<i32>>, Vec<Vec<i32>>) {
         rows.push(row);
     }
     for (i, _c) in rows[0].iter().enumerate() {
-        let mut col = vec![];//0; rows.len()];
+        let mut col = vec![]; //0; rows.len()];
         for row in &rows {
             col.push(row[i]);
         }
