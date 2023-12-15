@@ -128,7 +128,7 @@ fn do_part_two(input: Input) -> i64 {
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
 
     let (_rows, cols) = get_rows_and_cols(&lines);
-    let mut data = cols.clone();
+    let mut data = cols;
     let mut store: HashMap<Vec<Vec<i32>>, i32> = HashMap::new();
     let mut rev_store: HashMap<i32, Vec<Vec<i32>>> = HashMap::new();
     let (mut loop_start, mut loop_finish) = (0, 0);

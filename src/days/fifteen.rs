@@ -50,29 +50,24 @@ struct Lens {
 impl Lens {
     fn from_string(input: &str) -> (Lens, Operation) {
         if input.contains('=') {
-            let input = input.split('=').into_iter().collect::<Vec<&str>>();
+            let input = input.split('=').collect::<Vec<&str>>();
             let x = Lens {
-                box_name: format!("{}", input[0]),
+                box_name: input[0].to_string(),
                 focal_length: input[1].parse::<i64>().unwrap(),
             };
-            return (x, Operation::Add);
+            (x, Operation::Add)
         } else if input.contains('-') {
-            let input = input.split('-').into_iter().collect::<Vec<&str>>();
+            let input = input.split('-').collect::<Vec<&str>>();
             let x = Lens {
-                box_name: format!("{}", input[0]),
+                box_name: input[0].to_string(),
                 focal_length: 0,
             };
-            return (x, Operation::Remove);
+            (x, Operation::Remove)
         } else {
             panic!("Invalid Action");
         }
     }
 }
-struct Action {
-    lens: Lens,
-}
-
-impl Action {}
 
 fn do_part_two(input: Input) -> i64 {
     let lines = input.get_data().lines();
@@ -85,8 +80,8 @@ fn do_part_two(input: Input) -> i64 {
     for step in lines.split(',') {
         let (lens, op) = Lens::from_string(step);
         let box_no = hash(lens.box_name.as_str());
-        let mut box_name = lens.box_name.clone();
-        let mut box_id = 0;
+        let box_name = lens.box_name.clone();
+        let box_id;
         if keys.contains(&box_name) {
             box_id = keys.iter().position(|x| *x == box_name).unwrap() as i64;
         } else {
@@ -95,13 +90,13 @@ fn do_part_two(input: Input) -> i64 {
         }
         if op == Operation::Add {
             let focal_length = lens.focal_length;
-            let mut box_list = boxes.entry(box_no).or_insert(Vec::new());
+            let box_list = boxes.entry(box_no).or_insert(Vec::new());
             if !box_list.contains(&box_id) {
                 box_list.push(box_id);
             }
             focal_lengths.insert(box_id, focal_length);
         } else if op == Operation::Remove {
-            let mut box_list = boxes.entry(box_no).or_insert(Vec::new());
+            let box_list = boxes.entry(box_no).or_insert(Vec::new());
             let idx = &box_list.iter().position(|x| *x == box_id);
             match idx {
                 Some(idx) => {
@@ -119,7 +114,7 @@ fn do_part_two(input: Input) -> i64 {
     let mut total = 0;
     for box_no in boxes.keys() {
         let x = box_no + 1;
-        for (i, lens) in boxes.get(&box_no).unwrap().iter().enumerate() {
+        for (i, lens) in boxes.get(box_no).unwrap().iter().enumerate() {
             total += (i as i64 + 1) * x * focal_lengths.get(lens).unwrap();
         }
     }
@@ -127,7 +122,7 @@ fn do_part_two(input: Input) -> i64 {
 }
 
 fn hash(step: &str) -> i64 {
-    let mut chars = step.chars();
+    let chars = step.chars();
     let mut i = 0;
     for c in chars {
         i = hash_step(i, to_asci_code(c));
@@ -141,8 +136,8 @@ fn to_asci_code(c: char) -> i64 {
 
 fn hash_step(i: i64, code: i64) -> i64 {
     let mut i = i + code;
-    i = i * 17;
-    i = i % 256;
+    i *= 17;
+    i %= 256;
     i
 }
 
