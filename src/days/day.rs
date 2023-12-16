@@ -2,13 +2,13 @@ use crate::utils::{Input, ProblemInput};
 use std::{ io::BufRead, time::Instant};
 
 #[cfg(not(tarpaulin_include))]
-pub fn the_day() -> u32 {
+fn the_day() -> u32 {
     -1
 }
 
 #[cfg(not(tarpaulin_include))]
 pub fn part_one() -> (i64, std::time::Duration) {
-    todo!("Implement day {} part one",the_day());
+    //todo!("Implement day {} part one",the_day());
     let now = Instant::now();
     let path = format!("./inputs/{}",the_day());
     let input = ProblemInput::File(path.as_str());
@@ -18,7 +18,7 @@ pub fn part_one() -> (i64, std::time::Duration) {
 
 #[cfg(not(tarpaulin_include))]
 pub fn part_two() -> (i64, std::time::Duration) {
-    todo!("Implement day {} part two",the_day());
+    //todo!("Implement day {} part two",the_day());
     let now = Instant::now();
     let path = format!("./inputs/{}",the_day());
     let input = ProblemInput::File(path.as_str());
@@ -28,7 +28,7 @@ pub fn part_two() -> (i64, std::time::Duration) {
 
 
 
-pub fn do_part_one(input: Input) -> i64 {
+fn do_part_one(input: Input) -> i64 {
     let lines = input.get_data().lines();
     let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
