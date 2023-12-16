@@ -44,6 +44,7 @@ enum Direction {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Path {
+
     p: Vec<(Point, Direction)>,
 }
 
@@ -73,7 +74,7 @@ impl Board {
     }
     fn is_valid(&self, point: Point) -> bool {
         let (x, y) = (point.x, point.y);
-        x >= self.width || y >= self.height 
+        x < self.width && y < self.height 
     }
 }
 
@@ -87,6 +88,7 @@ impl Point {
         Point { x, y }
     }
 }
+
 
 fn get_next_directions(tile: Tile, direction: Direction) -> Vec<Direction> {
     let mut results: Vec<Direction> = Vec::new();
@@ -177,12 +179,14 @@ fn create_step(
     if board.is_valid(next_point) {
         // need to check for loops, the 'state' is location and next direction
         if path.contains(&(next_point, next_direction)) {
+            //println!("Board contains step");
             None
         } else {
             //path.push();
             Some((next_point, next_direction))
         }
     } else {
+        //println!("step invalid");
         None
     }
 }
@@ -254,13 +258,14 @@ fn do_part_one(input: Input) -> i64 {
 
 fn recursive_wrapper(path: &mut Vec<(Point, Direction)>, board: &Board) {
     let (next_point, direction) = *path.last().unwrap();
+
     let next_directions = get_next_directions(board.get_tile(next_point).unwrap(), direction);
 
     for next_direction in next_directions {
         //print_board(board, &points_touched);
         path.push((next_point, direction));
         let new_point = create_step(path, next_direction, board);
-
+        //println!("new_point: {:?}", new_point);
         if let Some(new_point) = new_point {
             path.push(new_point);
             recursive_wrapper(path, board);
