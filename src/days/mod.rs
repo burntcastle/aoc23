@@ -14,4 +14,6 @@ pub mod three;
 pub mod twelve;
 pub mod two;
 pub mod sixteen;
+pub mod seventeen;
+pub mod eighteen;
 //pub mod day;

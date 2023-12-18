@@ -53,6 +53,14 @@ fn main() {
                 Some(days::sixteen::part_one()),
                 Some(days::sixteen::part_two()),
             ),
+            17 => (
+                Some(days::seventeen::part_one()),
+                Some(days::seventeen::part_two()),
+            ),
+            18 => (
+                Some(days::eighteen::part_one()),
+                Some(days::eighteen::part_two()),
+            ),
             _ => (None, None),
         };
         println!();

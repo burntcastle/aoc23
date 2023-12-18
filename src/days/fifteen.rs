@@ -90,13 +90,13 @@ fn do_part_two(input: Input) -> i64 {
         }
         if op == Operation::Add {
             let focal_length = lens.focal_length;
-            let box_list = boxes.entry(box_no).or_insert(Vec::new());
+            let box_list = boxes.entry(box_no).or_default();
             if !box_list.contains(&box_id) {
                 box_list.push(box_id);
             }
             focal_lengths.insert(box_id, focal_length);
         } else if op == Operation::Remove {
-            let box_list = boxes.entry(box_no).or_insert(Vec::new());
+            let box_list = boxes.entry(box_no).or_default();
             let idx = &box_list.iter().position(|x| *x == box_id);
             match idx {
                 Some(idx) => {
@@ -106,8 +106,7 @@ fn do_part_two(input: Input) -> i64 {
                     // Not there!
                 }
             }
-        } else {
-        }
+        } 
         //println!("{:?}", boxes);
     }
     let mut total = 0;

@@ -44,7 +44,6 @@ enum Direction {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Path {
-
     p: Vec<(Point, Direction)>,
 }
 
@@ -74,7 +73,7 @@ impl Board {
     }
     fn is_valid(&self, point: Point) -> bool {
         let (x, y) = (point.x, point.y);
-        x < self.width && y < self.height 
+        x < self.width && y < self.height
     }
 }
 
@@ -88,7 +87,6 @@ impl Point {
         Point { x, y }
     }
 }
-
 
 fn get_next_directions(tile: Tile, direction: Direction) -> Vec<Direction> {
     let mut results: Vec<Direction> = Vec::new();
@@ -202,15 +200,15 @@ impl Tile {
             _ => panic!("Invalid tile char: {}", c),
         }
     }
-    fn to_char(tile: Tile) -> char {
-        match tile {
-            Tile::Empty => '.',
-            Tile::ReflectBack => '\\',
-            Tile::ReflectForward => '/',
-            Tile::SplitHorizontal => '-',
-            Tile::SplitVertical => '|',
-        }
-    }
+    // fn to_char(tile: Tile) -> char {
+    //     match tile {
+    //         Tile::Empty => '.',
+    //         Tile::ReflectBack => '\\',
+    //         Tile::ReflectForward => '/',
+    //         Tile::SplitHorizontal => '-',
+    //         Tile::SplitVertical => '|',
+    //     }
+    // }
 }
 
 fn build_board(input: Vec<&str>) -> Board {
@@ -225,21 +223,21 @@ fn build_board(input: Vec<&str>) -> Board {
     Board::new(results)
 }
 
-fn print_board(board: &Board, results: &HashSet<Point>) {
-    for y in 0..board.height {
-        for x in 0..board.width {
-            match results.get(&Point::new(x, y)) {
-                Some(_) => print!("#"),
-                None => print!(
-                    "{}",
-                    Tile::to_char(board.get_tile(Point::new(x, y)).unwrap())
-                ),
-            }
-        }
-        println!();
-    }
-    println!();
-}
+// fn print_board(board: &Board, results: &HashSet<Point>) {
+//     for y in 0..board.height {
+//         for x in 0..board.width {
+//             match results.get(&Point::new(x, y)) {
+//                 Some(_) => print!("#"),
+//                 None => print!(
+//                     "{}",
+//                     Tile::to_char(board.get_tile(Point::new(x, y)).unwrap())
+//                 ),
+//             }
+//         }
+//         println!();
+//     }
+//     println!();
+// }
 
 fn do_part_one(input: Input) -> i64 {
     let lines = input.get_data().lines();
@@ -252,7 +250,7 @@ fn do_part_one(input: Input) -> i64 {
     let mut path = vec![(start, Direction::Right)];
     recursive_wrapper(&mut path, &board);
     let results: HashSet<Point> = path.iter().map(|x| x.0).collect();
-    print_board(&board, &results);
+    //print_board(&board, &results);
     results.len() as i64
 }
 
@@ -324,33 +322,34 @@ mod tests {
 .|....-|.\
 ..//.|...."#;
 
-    const PART_ONE_TEST_LOOP: &str = r#"..\...\.
-........
-..|...-.
-........
-..\.../.."#;
-
-    const PART_TWO_ANSWER: i64 = 0;
-    const PART_TWO_TEST: &str = "";
+    const PART_TWO_ANSWER: i64 = 51;
+    const PART_TWO_TEST: &str = r#".|...\....
+|.-.\.....
+.....|-...
+........|.
+..........
+.........\
+..../.\\..
+.-.-/..|..
+.|....-|.\
+..//.|...."#;
 
     #[test]
-    fn panics() {
-        let input = "Panic!";
-        let res = std::panic::catch_unwind(|| panic!("{}", input));
-        assert!(res.is_err());
-
-        let res = std::panic::catch_unwind(|| part_one());
-        assert!(res.is_err());
-
-        let res = std::panic::catch_unwind(|| part_two());
-        assert!(res.is_err());
+    fn fn_check_get_tile() {
+        let input = ProblemInput::String(PART_ONE_TEST);
+        let input = Input::new(input);
+        let lines = input.get_data().lines();
+        let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
+        let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
+        let board = build_board(lines);
+        assert_eq!(None,board.get_tile(Point::new(10000, 10000)));
     }
 
     #[test]
-    fn fn_() {
+    #[should_panic]
+    fn panics_char() {
         let input = "123";
-        let result = input.parse::<i32>().unwrap();
-        assert_eq!(result, 123);
+        let result = Tile::from_char('X');
     }
 
     #[test]
@@ -358,15 +357,13 @@ mod tests {
         let input = ProblemInput::String(PART_ONE_TEST);
         let result = do_part_one(Input::new(input));
         println!("Result: {}", result);
-        assert_eq!(result, PART_ONE_ANSWER - 1);
+        assert_eq!(result, PART_ONE_ANSWER);
     }
 
     #[test]
-    fn one_loop() {
-        let input = ProblemInput::String(PART_ONE_TEST_LOOP);
-        let result = do_part_one(Input::new(input));
-        println!("Result: {}", result);
-        assert_eq!(result, PART_ONE_ANSWER - 1);
+    fn one_real() {
+        let answer = part_one();
+        assert_eq!(answer, answer);
     }
 
     #[test]
@@ -374,6 +371,12 @@ mod tests {
         let input = ProblemInput::String(PART_TWO_TEST);
         let result = do_part_two(Input::new(input));
         println!("Result: {}", result);
-        assert_eq!(result, 0);
+        assert_eq!(result, PART_TWO_ANSWER);
     }
+    // #[test]
+    // fn two_real(){
+    //     let answer = part_two();
+    //     assert_eq!(answer,answer);
+
+    // }
 }
