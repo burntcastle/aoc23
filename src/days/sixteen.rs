@@ -342,7 +342,7 @@ mod tests {
         let lines: Vec<String> = lines.map(|x| x.unwrap()).collect();
         let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
         let board = build_board(lines);
-        assert_eq!(None,board.get_tile(Point::new(10000, 10000)));
+        assert_eq!(None, board.get_tile(Point::new(10000, 10000)));
     }
 
     #[test]

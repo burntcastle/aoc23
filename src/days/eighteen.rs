@@ -47,13 +47,14 @@ fn parse_input(input: Vec<&str>) -> Vec<(i64, i64)> {
             "U" => {
                 current_loc.1 -= val;
             }
-            unknown => {panic!("Error: {:?}", unknown);}
+            unknown => {
+                panic!("Error: {:?}", unknown);
+            }
         }
         res.push(current_loc);
     }
     res
 }
-
 
 fn parse_input_updated(input: Vec<&str>) -> Vec<(i64, i64)> {
     let mut res = Vec::new();
@@ -65,10 +66,10 @@ fn parse_input_updated(input: Vec<&str>) -> Vec<(i64, i64)> {
         let _ = row.next().unwrap().parse::<i64>().unwrap();
         let data = row.next().unwrap().trim();
 
-        let val = i64::from_str_radix(&data[2..data.len()-2], 16).unwrap();
+        let val = i64::from_str_radix(&data[2..data.len() - 2], 16).unwrap();
 
-        let instr = data.chars().collect::<Vec<char>>(); 
-        let instr = instr[instr.len()-2];
+        let instr = data.chars().collect::<Vec<char>>();
+        let instr = instr[instr.len() - 2];
         match instr {
             '0' => {
                 current_loc.0 += val;
@@ -82,7 +83,9 @@ fn parse_input_updated(input: Vec<&str>) -> Vec<(i64, i64)> {
             '3' => {
                 current_loc.1 -= val;
             }
-            unknown => {panic!("Error: {:?}", unknown);}
+            unknown => {
+                panic!("Error: {:?}", unknown);
+            }
         }
         res.push(current_loc);
     }
@@ -105,10 +108,9 @@ fn do_part_one(input: Input) -> i64 {
         let (x_prev, y_prev) = parsed[(i + 1) % (parsed.len())];
         area += x_prev * y - x * y_prev;
         perimeter += (x - x_prev).abs() + (y - y_prev).abs();
-        
     }
 
-    let interior = area.abs() / 2  - perimeter / 2 + 1;
+    let interior = area.abs() / 2 - perimeter / 2 + 1;
     interior + perimeter
 }
 
@@ -141,9 +143,8 @@ fn do_part_two(input: Input) -> i64 {
         let (x_prev, y_prev) = parsed[(i + 1) % (parsed.len())];
         area += x_prev * y - x * y_prev;
         perimeter += (x - x_prev).abs() + (y - y_prev).abs();
-        
     }
-    let interior = area.abs() / 2  - perimeter / 2 + 1;
+    let interior = area.abs() / 2 - perimeter / 2 + 1;
     interior + perimeter
 }
 

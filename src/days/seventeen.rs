@@ -1,8 +1,7 @@
 use crate::utils::{Input, ProblemInput};
 use pathfinding::prelude::dijkstra;
 use std::hash::{Hash, Hasher};
-use std::{ io::BufRead, time::Instant};
-
+use std::{io::BufRead, time::Instant};
 
 #[cfg(not(tarpaulin_include))]
 fn the_day() -> u32 {
@@ -68,10 +67,10 @@ fn get_next_nodes(
     if y > 0 && Direction::Down != direction_in {
         neighbors.push(((x, y - 1), Direction::Up));
     }
-    if x < board.width  - 1 && Direction::Left != direction_in {
+    if x < board.width - 1 && Direction::Left != direction_in {
         neighbors.push(((x + 1, y), Direction::Right));
     }
-    if y < board.height  - 1 && Direction::Up != direction_in {
+    if y < board.height - 1 && Direction::Up != direction_in {
         neighbors.push(((x, y + 1), Direction::Down));
     }
     neighbors
@@ -112,9 +111,11 @@ impl RouteNode {
 
             let change_dir = self.direction != dir;
 
-            if (change_dir && self.step_in_direction < min ) ||(!change_dir && self.step_in_direction == max){
+            if (change_dir && self.step_in_direction < min)
+                || (!change_dir && self.step_in_direction == max)
+            {
                 continue;
-            }else if change_dir {
+            } else if change_dir {
                 next_node.step_in_direction = 0;
             }
 
@@ -204,7 +205,7 @@ fn do_dijkstra(board: &Board, max: i32, min: i32) -> i64 {
                 && p.step_in_direction >= min
                 && p.step_in_direction <= max
         },
-    );    
+    );
 
     let initial_node_down = RouteNode {
         x: 0,
@@ -224,7 +225,7 @@ fn do_dijkstra(board: &Board, max: i32, min: i32) -> i64 {
                 && p.step_in_direction <= max
         },
     );
-    let result = result_right.unwrap().1.min(result_down.unwrap().1);  
+    let result = result_right.unwrap().1.min(result_down.unwrap().1);
 
     // let mut printer: Vec<Vec<String>> = board
     //     .values
@@ -288,13 +289,12 @@ mod tests {
 999999999991
 999999999991";
 
-//     const PART_TWO_ANSWER_THREE: i64 = 18;
-//     const PART_TWO_TEST_THREE: &str = "111111111119999
-// 999999999919999
-// 999999999919999
-// 999999999919999
-// 999999999911111";
-
+    //     const PART_TWO_ANSWER_THREE: i64 = 18;
+    //     const PART_TWO_TEST_THREE: &str = "111111111119999
+    // 999999999919999
+    // 999999999919999
+    // 999999999919999
+    // 999999999911111";
 
     #[test]
     fn one() {
@@ -320,8 +320,6 @@ mod tests {
         let result = do_part_two(Input::new(input));
         //println!("Result: {}", result);
         assert_eq!(result, PART_TWO_ANSWER_TWO);
-
-
     }
 
     #[test]

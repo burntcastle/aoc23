@@ -90,7 +90,7 @@ mod tests {
         let input = ProblemInput::String(PART_TWO_TEST);
         let result = do_part_two(Input::new(input));
         println!("Result: {}", result);
-        assert_eq!(result, 0);
+        assert_eq!(result, PART_TWO_ANSWER);
     }
 
 }

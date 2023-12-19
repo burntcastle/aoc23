@@ -106,7 +106,7 @@ fn do_part_two(input: Input) -> i64 {
                     // Not there!
                 }
             }
-        } 
+        }
         //println!("{:?}", boxes);
     }
     let mut total = 0;
