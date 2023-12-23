@@ -99,8 +99,6 @@ fn do_part_one(input: Input) -> i64 {
 
     let parsed = parse_input(lines);
 
-    // let width = parsed.clone().iter().map(|x| x.0).max().unwrap() as usize + 1;
-    // let heigth = parsed.clone().iter().map(|x| x.1).max().unwrap() as usize + 1;
     let mut area = 0;
 
     let mut perimeter = 0;
@@ -120,24 +118,8 @@ fn do_part_two(input: Input) -> i64 {
     let lines: Vec<&str> = lines.iter().map(AsRef::as_ref).collect();
 
     let parsed = parse_input_updated(lines);
-    // let width = parsed.clone().iter().map(|x| x.0).max().unwrap() as usize + 1;
-    // let heigth = parsed.clone().iter().map(|x| x.1).max().unwrap() as usize + 1;
     let mut area = 0;
-    // let mut print = vec![vec!['.'; width]; heigth];
 
-    // let mut y_gcd = 1;
-    // let mut x_gcd = 1;
-    // for (x,y) in parsed.iter() {
-    //     print!("({}, {}), ", x, y);
-    //     if *x != 0{
-    //         x_gcd = num::integer::gcd(x_gcd, *x);
-    //     }
-    //     if *y != 0 {
-    //         y_gcd = num::integer::gcd(y_gcd, *y);
-    //     }
-    //     println!("GCD: {}, {}", x_gcd, y_gcd);
-    // }
-    // println!("GCD: {}, {}", x_gcd, y_gcd);
     let mut perimeter = 0;
     for (i, (x, y)) in parsed.iter().enumerate() {
         let (x_prev, y_prev) = parsed[(i + 1) % (parsed.len())];

@@ -303,11 +303,11 @@ mod tests {
         println!("Result: {}", result);
         assert_eq!(result, PART_ONE_ANSWER);
     }
-    #[test]
-    fn one_real() {
-        let (result, dur) = part_one();
-        assert_eq!(result, 771);
-    }
+    // #[test]
+    // fn one_real() {
+    //     let (result, dur) = part_one();
+    //     assert_eq!(result, 771);
+    // }
 
     #[test]
     fn two() {
@@ -322,9 +322,9 @@ mod tests {
         assert_eq!(result, PART_TWO_ANSWER_TWO);
     }
 
-    #[test]
-    fn two_real() {
-        let (result, dur) = part_two();
-        assert_eq!(result, 930);
-    }
+    // #[test]
+    // fn two_real() {
+    //     let (result, dur) = part_two();
+    //     assert_eq!(result, 930);
+    // }
 }

@@ -360,11 +360,11 @@ mod tests {
         assert_eq!(result, PART_ONE_ANSWER);
     }
 
-    #[test]
-    fn one_real() {
-        let answer = part_one();
-        assert_eq!(answer, answer);
-    }
+    // #[test]
+    // fn one_real() {
+    //     let answer = part_one();
+    //     assert_eq!(answer, answer);
+    // }
 
     #[test]
     fn two() {
