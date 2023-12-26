@@ -81,6 +81,14 @@ fn main() {
                 Some(days::twentythree::part_one()),
                 Some(days::twentythree::part_two()),
             ),
+            24 => (
+                Some(days::twentyfour::part_one()),
+                Some(days::twentyfour::part_two()),
+            ),
+            25 => (
+                Some(days::twentyfive::part_one()),
+                Some(days::twentyfive::part_two()),
+            ),
             _ => (None, None),
         };
         println!();

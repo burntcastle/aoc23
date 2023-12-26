@@ -202,23 +202,18 @@ fn get_longest_path(
         .copied()
         .collect::<Vec<(i64, i64)>>();
     keys.sort_by(|a, b| a.1.cmp(&b.1));
-
     let start = keys.first().unwrap();
     let finish = keys.last().unwrap();
-
     let start_ndx = *graph_lookup.get(start).unwrap();
     let finish_ndx = *graph_lookup.get(finish).unwrap();
-
     // the vector of visit lengths (the results)
     let mut visit_lengths: Vec<i64> = vec![];
     if do_pruning {
         println!("Nodes pre pruning: {}", graph.node_count());
     }
-
     // this loop iterates over the graph and removes any nodes that have only two neighbors
     // this is skipped for part one as it is not suitable as it does not account for the type of the node
     // e.g. directed/empty etc, we could add in logic to check that but part one is already quick enough
-
     loop {
         if !do_pruning {
             break;
@@ -226,7 +221,7 @@ fn get_longest_path(
         // get a node that has only two neighbors but isn't connected to the start or finish
         // this makes it easier as we aren't later going to have to reconnect the start and finish
         // we just add one to the answer to account for the edge between the start and finish
-        // find is good as it returns the first node that matches the predicate
+        // find is good as it returns the first node that matches the predicate and ceases execution.
         let ndx = graph.node_indices().find(|ndx| {
             graph.neighbors(*ndx).count() == 2
                 && !graph
@@ -243,9 +238,7 @@ fn get_longest_path(
             None => break,
             Some(ndx) => {
                 let neighbors = graph.neighbors(ndx).collect::<Vec<_>>();
-
                 //check all three nodes are the same type
-
                 // get the weights of the edges between the neighbors and the node and then insert an edge between the neighbors
                 // with the sum of the weights to skip the node
                 let edge_weight_a_to_b = graph
@@ -258,7 +251,6 @@ fn get_longest_path(
                         .next()
                         .unwrap()
                         .weight();
-
                 // same again in the other direction
                 let edge_weight_b_to_a = graph
                     .edges_connecting(neighbors[1], ndx)
@@ -270,29 +262,23 @@ fn get_longest_path(
                         .next()
                         .unwrap()
                         .weight();
-
                 // add these edges to the graph
                 graph.add_edge(neighbors[0], neighbors[1], edge_weight_a_to_b);
                 graph.add_edge(neighbors[1], neighbors[0], edge_weight_b_to_a);
-
                 // now delete the node (this deletes the edges associated with the node as well)
                 graph.remove_node(ndx);
-
                 // this all only works because we are using a stable graph, if we were using a normal graph the node indices would change
             }
         }
     }
-
     if do_pruning {
         println!("Nodes post pruning: {}", graph.node_count());
     }
     // Create deques of nodes to visit and visited nodes
     let mut to_visit = VecDeque::new();
     let mut visited = VecDeque::new();
-
     // Add the start node to the to_visit deque
     to_visit.push_back((start_ndx, start_ndx));
-
     // odd trick, can't work out how to get the type for the VecDeque
     visited.push_back(start_ndx);
     visited.pop_back();
@@ -301,7 +287,6 @@ fn get_longest_path(
         // first check if we have finished
         if next == finish_ndx {
             let mut cost = 0;
-
             // add the edge between the the tiles in the path, note the zip trick to pair up the nodes
             visited
                 .iter()
@@ -310,7 +295,6 @@ fn get_longest_path(
                     let edge_weight = *graph.edges_connecting(*a, *b).next().unwrap().weight();
                     cost += edge_weight;
                 });
-
             // add the edge between the final tile and the finish
             cost += *graph
                 .edges_connecting(parent, next)
@@ -329,10 +313,8 @@ fn get_longest_path(
                     break;
                 }
             }
-
             // add the current node to the visited list
             visited.push_back(next);
-
             // now add the children of the current node to the to_visit list but only if they aren't already in the visited list
             for child in graph.neighbors(next) {
                 if !visited.contains(&child) {
